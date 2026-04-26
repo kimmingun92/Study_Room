@@ -11,5 +11,5 @@ void setLedPower(uint8_t id, uint8_t brightness){
 
 }
 uint8_t getLedPower(uint8_t id){
-    
+    return 0;
 }
