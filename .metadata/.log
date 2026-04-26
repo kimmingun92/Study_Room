@@ -1,0 +1,57 @@
+!SESSION 2026-04-22 11:20:42.676 -----------------------------------------------
+eclipse.buildId=Version 2.1.1
+java.version=21.0.9
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-04-22 11:21:00.624
+!MESSAGE Log4j2 initialized with config file G:\Project\STM\StudyRoom\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-04-22 11:21:04.192
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:21:05.517
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM1
+COM2
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:21:05.518
+!MESSAGE port: COM1
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:21:05.518
+!MESSAGE port: COM2
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:21:05.518
+!MESSAGE port: COM6
+!SESSION 2026-04-22 11:38:50.839 -----------------------------------------------
+eclipse.buildId=Version 2.1.1
+java.version=21.0.9
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=ko_KR
+Framework arguments:  G:\Project\STM\StudyRoom\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 G:\Project\STM\StudyRoom\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2026-04-22 11:39:04.210
+!MESSAGE Log4j2 initialized with config file G:\Project\STM\StudyRoom\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2026-04-22 11:39:07.831
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:39:24.237
+!MESSAGE Executed PowerShell command powershell.exe -Command "Get-CimInstance -ClassName Win32_SerialPort | Select-Object -ExpandProperty DeviceID":
+COM1
+COM2
+COM6
+
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:39:24.237
+!MESSAGE port: COM1
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:39:24.238
+!MESSAGE port: COM2
+
+!ENTRY com.st.stm32cube.ide.mpu.remote.serial 1 1 2026-04-22 11:39:24.238
+!MESSAGE port: COM6
