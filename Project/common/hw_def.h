@@ -2,9 +2,9 @@
 #define __HW_HW_DEF_H_
 
 #include "def.h"
-#include "main.h"
 #include "usart.h"
 #include "cmsis_os2.h"
+#include "lwip.h"
 #include "hw.h"
 
 #endif

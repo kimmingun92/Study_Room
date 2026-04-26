@@ -5,5 +5,6 @@
 #include "pwm.h"
 #include "dht.h"
 #include "led.h"
+#include "uart.h"
 
 #endif

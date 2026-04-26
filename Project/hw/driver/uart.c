@@ -1,7 +1,7 @@
 #include "uart.h"
 
 
-extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
 
 static osMessageQueueId_t uart_rx_q = NULL;
 static osMutexId_t uart_tx_mutex =NULL;
@@ -29,7 +29,7 @@ bool uartInit(void){
     }
 
     bool ret = uartOpen(0,9600);
-    HAL_UART_Receive_IT(&huart2, &rx_data, 1);
+    HAL_UART_Receive_IT(&huart3, &rx_data, 1);
 
     return ret;
 }
@@ -41,7 +41,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
             osMessageQueuePut(uart_rx_q, &rx_data, 0, 0);
         }
 
-        HAL_UART_Receive_IT(&huart2, &rx_data,1);
+        HAL_UART_Receive_IT(&huart3, &rx_data,1);
     }
 }
 
@@ -73,13 +73,13 @@ bool uartReadBlock(uint8_t ch, uint8_t *p_data, uint32_t timeout){
 
 bool uartOpen(uint8_t ch, uint32_t baudrate){
     
-    if(huart2.Init.BaudRate!=baudrate)
-       huart2.Init.BaudRate=baudrate;
+    if(huart3.Init.BaudRate!=baudrate)
+       huart3.Init.BaudRate=baudrate;
 
-    if(HAL_UART_DeInit(&huart2)!=HAL_OK)
+    if(HAL_UART_DeInit(&huart3)!=HAL_OK)
         return false;
 
-    if(HAL_UART_Init(&huart2)!=HAL_OK)
+    if(HAL_UART_Init(&huart3)!=HAL_OK)
         return false;
 
 
@@ -98,7 +98,7 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data, uint32_t length)
     
     osMutexAcquire(uart_tx_mutex, osWaitForever);
 
-    if(HAL_UART_Transmit(&huart2,p_data,length, TIMEOUT)!=HAL_OK){
+    if(HAL_UART_Transmit(&huart3,p_data,length, TIMEOUT)!=HAL_OK){
         osMutexRelease(uart_tx_mutex);
         return 0;
     }
