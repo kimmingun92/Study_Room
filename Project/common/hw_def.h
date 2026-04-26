@@ -4,6 +4,7 @@
 #include "def.h"
 #include "main.h"
 #include "usart.h"
+#include "cmsis_os2.h"
 #include "hw.h"
 
 #endif
