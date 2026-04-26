@@ -4,16 +4,16 @@
 #include "hw_def.h"
 #include "def.h"
 
-typedef struct COLOR{
+enum LED_COLOR{
     RED = 0,
     GREEN,
     BLUE,
     MAGENTA,
     YELLOW
-} LED_COLOR
+};
 
-void setLedColor(uint8_t id, LED_COLOR color);
-LED_COLOR getLedColor(uint8_t id);
+void setLedColor(uint8_t id, int color);
+int getLedColor(uint8_t id);
 
 void setLedPower(uint8_t id, uint8_t brightness);
 uint8_t getLedPower(uint8_t id);
