@@ -5,7 +5,7 @@ extern struct netif gnetif;
 void StartDefaultTask(void *argument){
     MX_LWIP_Init();
     apInit();
-    apMain();.
+    apMain();
 }
 
 void apInit(){
