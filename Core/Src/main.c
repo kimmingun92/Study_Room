@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "eth.h"
+#include "tim.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
@@ -86,12 +87,17 @@ int main(void)
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
+
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ETH_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
+  MX_TIM2_Init();
+
+  
   /* USER CODE BEGIN 2 */
+  apInit();
 
   /* USER CODE END 2 */
 
@@ -100,7 +106,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    apMain();
+  apMain();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
