@@ -59,6 +59,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     Project
     Project/ap
+    Project/bsp
     Project/common
     Project/hw
     Project/hw/driver
