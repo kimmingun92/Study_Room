@@ -1,9 +1,9 @@
 #include "led.h"
 
-void setLedColor(uint8_t id, LED_COLOR color){
+void setLedColor(uint8_t id, int color){
 
 }
-LED_COLOR getLedColor(uint8_t id){
+int getLedColor(uint8_t id){
 
 }
 
