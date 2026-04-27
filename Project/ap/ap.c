@@ -1,17 +1,20 @@
 #include "ap.h"
-#include "survo.h"
+
+extern struct netif gnetif;
+
+void StartDefaultTask(void *argument){
+    MX_LWIP_Init();
+    apInit();
+    apMain();.
+}
 
 void apInit(){
-
+    uartInit();
 }
 
 void apMain(){
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);  // Green (LD1)
-    HAL_Delay(300);
-    
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);  // Blue (LD2)
-    HAL_Delay(300);
-    
-    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14); // Red (LD3)
-    HAL_Delay(300);
+    while (1) {
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+        osDelay(1000);
+    }
 }
