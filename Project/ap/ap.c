@@ -14,7 +14,7 @@ void apInit(){
 
 void apMain(){
     while (1) {
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
         osDelay(1000);
     }
 }
