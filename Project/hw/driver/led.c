@@ -1,3 +1,4 @@
+
 #include "led.h"
 #include <stdint.h>
 
@@ -15,6 +16,8 @@ typedef struct {
     LED_COLOR color;
     uint8_t brightness;
 } led_tbl_t;
+
+LED_COLOR getLedColor(uint8_t id);
 
 static led_tbl_t led_tbl[LED_COUNT] = {
     {GPIOF, GPIO_PIN_14, GPIOF, GPIO_PIN_15, LED_OFF, 0},
@@ -146,27 +149,6 @@ uint8_t getLedPower(uint8_t id)
     }
 
     return led_tbl[id].brightness;
-}
-
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance != LED_UART_INSTANCE) {
-        return;
-    }
-
-    if (led_rx_data == '\r' || led_rx_data == '\n') {
-        if (led_rx_index > 0) {
-            led_rx_buffer[led_rx_index] = '\0';
-            ledCommandProcess(led_rx_buffer);
-            led_rx_index = 0;
-        }
-    } else if (led_rx_index < (LED_RX_BUFFER_SIZE - 1)) {
-        led_rx_buffer[led_rx_index++] = (char)led_rx_data;
-    } else {
-        led_rx_index = 0;
-    }
-
-    ledUartStartReceive();
 }
 
 static void ledWrite(uint8_t id, GPIO_PinState rg_state, GPIO_PinState b_state)

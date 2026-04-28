@@ -113,7 +113,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    apMain();
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

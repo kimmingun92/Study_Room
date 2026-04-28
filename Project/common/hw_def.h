@@ -7,4 +7,18 @@
 #include "lwip.h"
 #include "hw.h"
 
+
+#include "cmsis_os2.h"
+
+#include "uart.h"
+
+
+
+
+
+#include "tim.h"
+
+
+
+
 #endif
