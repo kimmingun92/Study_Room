@@ -6,5 +6,6 @@
 #include "dht.h"
 #include "led.h"
 #include "uart.h"
+#include "ir_receiver.h"
 
 #endif

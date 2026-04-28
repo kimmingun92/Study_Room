@@ -20,12 +20,14 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "lwip.h"
+#include "tim.h"
 #include "usart.h"
 #include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ap.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,8 +94,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
+  apInit();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -110,7 +113,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    apMain();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
