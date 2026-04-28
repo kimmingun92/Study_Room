@@ -28,8 +28,8 @@ void irReceiverInit(void)
     temp_code = 0;
     bit_count = 0;
 
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
-    HAL_TIM_Base_Start(&htim3);
+    __HAL_TIM_SET_COUNTER(&htim4, 0);
+    HAL_TIM_Base_Start(&htim4);
 }
 
 bool irReceiverAvailable(void)
@@ -56,8 +56,8 @@ void irReceiverExtiCallback(uint16_t GPIO_Pin)
         return;
     }
 
-    uint32_t duration = __HAL_TIM_GET_COUNTER(&htim3);
-    __HAL_TIM_SET_COUNTER(&htim3, 0);
+    uint32_t duration = __HAL_TIM_GET_COUNTER(&htim4);
+    __HAL_TIM_SET_COUNTER(&htim4, 0);
 
     // NEC Lead Code: 9ms LOW + 4.5ms HIGH = 약 13.5ms
     if (duration > NEC_LEAD_MIN && duration < NEC_LEAD_MAX)

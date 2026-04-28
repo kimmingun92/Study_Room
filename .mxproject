@@ -26,7 +26,6 @@ HeaderFiles#8=..\Core\Inc\stm32f4xx_it.h
 HeaderFiles#9=..\Core\Inc\stm32f4xx_hal_conf.h
 HeaderFiles#10=..\Core\Inc\main.h
 HeaderFolderListSize=3
->>>>>>> DHT
 HeaderPath#0=..\Core\Inc
 HeaderPath#1=..\LWIP\App
 HeaderPath#2=..\LWIP\Target
