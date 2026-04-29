@@ -179,6 +179,128 @@ static void cliClear(uint8_t argc, char *argv[])
     cliPrintf("\x1B[2J\x1B[H");
 }
 
+static void cliDoor(uint8_t argc, char *argv[])
+{
+    int id;
+
+    if (argc == 1)
+    {
+        cliPrintf("Usage:\r\n");
+        cliPrintf("  door [0~3] open/close/status\r\n");
+        cliPrintf("  door all open/close\r\n");
+        return;
+    }
+
+    // ----------- ALL 제어 -----------
+    if (strcmp(argv[1], "all") == 0)
+    {
+        if (argc != 3)
+        {
+            cliPrintf("Usage: door all open/close\r\n");
+            return;
+        }
+
+        if (strcmp(argv[2], "open") == 0)
+        {
+            for (int i = 0; i < SERVO_COUNT; i++)
+            {
+                changeDoorState(i, DOOR_OPEN);
+            }
+            cliPrintf("all doors open\r\n");
+        }
+        else if (strcmp(argv[2], "close") == 0)
+        {
+            for (int i = 0; i < SERVO_COUNT; i++)
+            {
+                changeDoorState(i, DOOR_CLOSE);
+            }
+            cliPrintf("all doors close\r\n");
+        }
+        else
+        {
+            cliPrintf("Usage: door all open/close\r\n");
+        }
+        return;
+    }
+    // ----------- 전체 상태 조회 -----------
+    if (argc == 2 && strcmp(argv[1], "status") == 0)
+    {
+        for (int i = 0; i < SERVO_COUNT; i++)
+        {
+            cliPrintf("door %d is %s\r\n",
+                    i,
+                    getDoorState(i) == DOOR_OPEN ? "open" : "close");
+        }
+        return;
+    }
+
+  
+    // ----------- 개별 문 제어 -----------
+    if (strcmp(argv[1], "0") == 0)
+    {
+        id = 0;
+    }
+    else if (strcmp(argv[1], "1") == 0)
+    {
+        id = 1;
+    }
+    else if (strcmp(argv[1], "2") == 0)
+    {
+        id = 2;
+    }
+    else if (strcmp(argv[1], "3") == 0)
+    {
+        id = 3;
+    }
+    else
+    {
+        cliPrintf("Usage:\r\n");
+        cliPrintf("  door [0~3] open/close/status\r\n");
+        cliPrintf("  door all open/close\r\n");
+        cliPrintf("  door status\r\n");
+        return;
+    }
+    // ----------- 상태 조회 -----------
+    if (argc == 2 || strcmp(argv[2], "status") == 0)
+    {
+        cliPrintf("door %d is %s\r\n",
+                  id,
+                  getDoorState(id) == DOOR_OPEN ? "open" : "close");
+        return;
+    }
+
+    // ----------- OPEN -----------
+    if (strcmp(argv[2], "open") == 0)
+    {
+        if (getDoorState(id) == DOOR_OPEN)
+        {
+            cliPrintf("door %d already open\r\n", id);
+            return;
+        }
+
+        changeDoorState(id, DOOR_OPEN);
+        cliPrintf("door %d open\r\n", id);
+    }
+    // ----------- CLOSE -----------
+    else if (strcmp(argv[2], "close") == 0)
+    {
+        if (getDoorState(id) == DOOR_CLOSE)
+        {
+            cliPrintf("door %d already close\r\n", id);
+            return;
+        }
+
+        changeDoorState(id, DOOR_CLOSE);
+        cliPrintf("door %d close\r\n", id);
+    }
+    else
+    {
+        cliPrintf("Usage:\r\n");
+        cliPrintf("  door [0~3] open/close/status\r\n");
+        cliPrintf("  door all open/close\r\n");
+    }
+}
+
 void cliInit(void)
 {
     cli_cmd_cnt = 0;
@@ -195,6 +317,7 @@ void cliInit(void)
     cliAdd("sys", cliSys);
     cliAdd("log", cliLog);
     cliAdd("dht", cliDht);
+    cliAdd("door", cliDoor);
 }
 
 void cliRunCommand(void)

@@ -1,4 +1,5 @@
 #include "ap.h"
+#include "servo.h"
 
 extern struct netif gnetif;
 

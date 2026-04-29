@@ -6,4 +6,5 @@ void hwInit(void)
     dhtInit();
     cliInit();
     logInit();
+    servoInit();
 }
