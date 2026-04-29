@@ -1,9 +1,8 @@
 #ifndef __HW_DRIVER_IR_RECEIVER_H_
 #define __HW_DRIVER_IR_RECEIVER_H_
 
-#include <stdint.h>
-#include <stdbool.h>
-#include "main.h"
+#include "hw_def.h"
+#include "def.h"
 
 #define IR_RX_PIN GPIO_PIN_0
 

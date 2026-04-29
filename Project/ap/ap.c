@@ -2,19 +2,22 @@
 
 extern struct netif gnetif;
 
-void StartDefaultTask(void *argument){
+void StartDefaultTask(void *argument)
+{
     MX_LWIP_Init();
     apInit();
-    apMain();
-}
-
-void apInit(){
-    uartInit();
-}
-
-void apMain(){
+    cliPrintf("CLI> ");
     while (1) {
-        HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_14);
-        osDelay(1000);
+        apMain();
     }
+}
+
+void apInit()
+{
+    hwInit();
+}
+
+void apMain()
+{
+    cliMain();
 }

@@ -1,6 +1,4 @@
-
 #include "led.h"
-#include <stdint.h>
 
 #define LED_COUNT             1
 #define LED_UART              huart3
@@ -213,9 +211,4 @@ static int ledStringEqual(const char *a, const char *b)
     }
 
     return (*a == '\0' && *b == '\0');
-}
-
-void USART3_IRQHandler(void)
-{
-    HAL_UART_IRQHandler(&LED_UART);
 }

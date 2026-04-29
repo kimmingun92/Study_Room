@@ -7,5 +7,9 @@
 #include "led.h"
 #include "uart.h"
 #include "ir_receiver.h"
+#include "cli.h"
+#include "log.h"
+
+void hwInit(void);
 
 #endif

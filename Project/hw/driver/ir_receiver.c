@@ -1,6 +1,4 @@
 #include "ir_receiver.h"
-#include "tim.h"
-#include "main.h"
 
 static volatile uint32_t ir_data = 0;
 static volatile bool ir_ready = false;

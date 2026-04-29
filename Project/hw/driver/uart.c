@@ -1,6 +1,5 @@
 #include "uart.h"
 
-
 extern UART_HandleTypeDef huart3;
 
 static osMessageQueueId_t uart_rx_q = NULL;
@@ -36,7 +35,7 @@ bool uartInit(void){
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 
-    if(huart->Instance==USART2){
+    if(huart->Instance==USART3){
         if(uart_rx_q!=NULL){
             osMessageQueuePut(uart_rx_q, &rx_data, 0, 0);
         }
