@@ -1,7 +1,7 @@
 #ifndef __HW_HW_H_
 #define __HW_HW_H_
 
-#include "survo.h"
+#include "servo.h"
 #include "pwm.h"
 #include "dht.h"
 #include "led.h"
