@@ -265,10 +265,8 @@ void cliMain(void)
 {
     uint8_t rx_data;
     if (uartReadBlock(0, &rx_data, osWaitForever) == false) {
-        cliPrintf("false %X\n", rx_data);
         return;
     }
-    cliPrintf("%X\n", rx_data);
 
     if (cli_input_state != CLI_STATE_NORMAL) {
         processAnsiEscape(rx_data);
