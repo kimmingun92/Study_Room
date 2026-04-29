@@ -15,7 +15,7 @@ void StartDefaultTask(void *argument)
 void dhtSystemTask(void *argument)
 {
     for (;;) {
-        osDelay(10);
+        dhtMain();
     }
 }
 
@@ -69,6 +69,5 @@ void apInit()
 void apMain()
 {
     cliMain();
-    dhtMain();
     osDelay(10);
 }

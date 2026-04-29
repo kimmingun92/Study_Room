@@ -5,6 +5,7 @@ void hwInit(void)
     uartInit();
     dhtInit();
     cliInit();
+    ledInit();
     logInit();
     servoInit();
 }
