@@ -9,6 +9,7 @@
 #include "ir_receiver.h"
 #include "cli.h"
 #include "log.h"
+#include "servo.h"
 
 void hwInit(void);
 

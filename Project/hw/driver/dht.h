@@ -6,6 +6,8 @@
 
 bool dhtInit();
 bool dhtRead();
+void cliDht(uint8_t argc, char *argv[]);
+void dhtMain(void);
 
 
 uint8_t getTem();

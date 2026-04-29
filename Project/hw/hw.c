@@ -3,6 +3,8 @@
 void hwInit(void)
 {
     uartInit();
+    dhtInit();
     cliInit();
     logInit();
+    servoInit();
 }

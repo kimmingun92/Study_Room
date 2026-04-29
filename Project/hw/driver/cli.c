@@ -316,6 +316,7 @@ void cliInit(void)
     cliAdd("info", cliInfo);
     cliAdd("sys", cliSys);
     cliAdd("log", cliLog);
+    cliAdd("dht", cliDht);
     cliAdd("door", cliDoor);
 }
 
@@ -387,7 +388,7 @@ void cliSetCtrlCHandler(cli_callback_t handler)
 void cliMain(void)
 {
     uint8_t rx_data;
-    if (uartReadBlock(0, &rx_data, osWaitForever) == false) {
+    if (uartReadBlock(0, &rx_data, 0) == false) {
         return;
     }
 
@@ -398,7 +399,9 @@ void cliMain(void)
 
     switch (rx_data) {
     case 0x03:
-        ctrl_c_handler();
+        if (ctrl_c_handler != NULL) {
+            ctrl_c_handler();
+        }
         cliPrintf("^c \r\nCLI>");
         cli_line_buf_idx = 0;
         break;
@@ -419,4 +422,3 @@ void cliMain(void)
         break;
     }
 }
-

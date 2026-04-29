@@ -5,10 +5,9 @@
 #include "usart.h"
 #include "cmsis_os2.h"
 #include "lwip.h"
-#include "hw.h"
 #include "cmsis_os2.h"
 #include "tim.h"
-#include "servo.h"
+#include "hw.h"
 
 
 #endif
