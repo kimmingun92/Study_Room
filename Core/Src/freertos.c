@@ -54,6 +54,20 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for dhtTask */
+osThreadId_t dhtTaskHandle;
+const osThreadAttr_t dhtTask_attributes = {
+  .name = "dhtTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for tcpTask */
+osThreadId_t tcpTaskHandle;
+const osThreadAttr_t tcpTask_attributes = {
+  .name = "tcpTask",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -61,6 +75,8 @@ const osThreadAttr_t defaultTask_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
+void dhtSystemTask(void *argument);
+void tcpClientSystemTask(void *argument);
 
 extern void MX_LWIP_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -95,6 +111,12 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+  /* creation of dhtTask */
+  dhtTaskHandle = osThreadNew(dhtSystemTask, NULL, &dhtTask_attributes);
+
+  /* creation of tcpTask */
+  tcpTaskHandle = osThreadNew(tcpClientSystemTask, NULL, &tcpTask_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -123,6 +145,42 @@ __weak void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_dhtSystemTask */
+/**
+* @brief Function implementing the dhtTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_dhtSystemTask */
+__weak void dhtSystemTask(void *argument)
+{
+  /* USER CODE BEGIN dhtSystemTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END dhtSystemTask */
+}
+
+/* USER CODE BEGIN Header_tcpClientSystemTask */
+/**
+* @brief Function implementing the tcpTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_tcpClientSystemTask */
+__weak void tcpClientSystemTask(void *argument)
+{
+  /* USER CODE BEGIN tcpClientSystemTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END tcpClientSystemTask */
 }
 
 /* Private application code --------------------------------------------------*/

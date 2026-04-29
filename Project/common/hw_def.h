@@ -7,6 +7,7 @@
 #include "lwip.h"
 #include "cmsis_os2.h"
 #include "tim.h"
+#include "lwip/api.h"
 #include "hw.h"
 
 
