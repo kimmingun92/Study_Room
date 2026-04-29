@@ -1,4 +1,5 @@
 #include "ap.h"
+#include "servo.h"
 
 extern struct netif gnetif;
 
@@ -15,6 +16,7 @@ void StartDefaultTask(void *argument)
 void apInit()
 {
     hwInit();
+    servoInit();
 }
 
 void apMain()

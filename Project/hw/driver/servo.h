@@ -11,5 +11,6 @@
 
 void servoInit(void);
 void changeDoorState(uint8_t id, bool doorState);
+bool getDoorState(uint8_t id);
 
 #endif

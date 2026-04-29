@@ -8,6 +8,7 @@
 #include "hw.h"
 #include "cmsis_os2.h"
 #include "tim.h"
+#include "servo.h"
 
 
 #endif

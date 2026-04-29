@@ -52,3 +52,11 @@ void changeDoorState(uint8_t id, bool doorState)
                    SERVO_CLOSE_US);
     }
 }
+
+bool getDoorState(uint8_t id)
+{
+    if (id >= SERVO_COUNT)
+        return DOOR_CLOSE;
+
+    return servo_tbl[id].doorState;
+}
