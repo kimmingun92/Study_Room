@@ -1,4 +1,5 @@
 #include "cli.h"
+#include "led.h"
 
 #define CLI_LINE_BUF_MAX 64
 #define CLI_CMD_LIST_MAX 32
@@ -26,6 +27,10 @@ static uint8_t cli_history_depth = 0;
 typedef enum { CLI_STATE_NORMAL = 0, CLI_STATE_ESC_RCVD, CLI_STATE_BRAKCET_RCVD } cli_input_state_t;
 
 static cli_input_state_t cli_input_state = CLI_STATE_NORMAL;
+
+static void cliLed(uint8_t argc, char *argv[]);
+static bool cliLedColorFromString(const char *str, LED_COLOR *color);
+static bool cliIsLedAlias(const char *cmd_str);
 
 static void handleEnterKey(void)
 {
@@ -194,6 +199,7 @@ void cliInit(void)
     cliAdd("info", cliInfo);
     cliAdd("sys", cliSys);
     cliAdd("log", cliLog);
+    cliAdd("led", cliLed);
 }
 
 void cliRunCommand(void)
@@ -204,7 +210,8 @@ void cliRunCommand(void)
 
     bool is_found = false;
     for (uint8_t i = 0; i < cli_cmd_cnt; i++) {
-        if (strcmp(cli_argv[0], cli_cmd_list[i].cmd_str) == 0) {
+        if (strcmp(cli_argv[0], cli_cmd_list[i].cmd_str) == 0 ||
+            (strcmp(cli_cmd_list[i].cmd_str, "led") == 0 && cliIsLedAlias(cli_argv[0]))) {
             cli_cmd_list[i].cmd_func(cli_argc, cli_argv);
             is_found = true;
             break;
@@ -295,4 +302,52 @@ void cliMain(void)
             handleCharInsert(rx_data);
         break;
     }
+}
+
+static void cliLed(uint8_t argc, char *argv[])
+{
+    LED_COLOR color;
+    uint8_t id;
+
+    if (argc == 2 &&
+        strncmp(argv[0], "led", 3) == 0 &&
+        argv[0][3] >= '1' && argv[0][3] <= '3' &&
+        argv[0][4] == '\0') {
+        id = (uint8_t)(argv[0][3] - '1');
+
+        if (!cliLedColorFromString(argv[1], &color)) {
+            cliPrintf("Usage: led[1|2|3] [yellow|white|warm|off]\r\n");
+            return;
+        }
+    } else {
+        cliPrintf("Usage: led[1|2|3] [yellow|white|warm|off]\r\n");
+        return;
+    }
+
+    setLedColor(id, color);
+    cliPrintf("LED%u ok\r\n", id + 1);
+}
+
+static bool cliLedColorFromString(const char *str, LED_COLOR *color)
+{
+    if (strcmp(str, "off") == 0) {
+        *color = LED_OFF;
+    } else if (strcmp(str, "yellow") == 0) {
+        *color = LED_YELLOW;
+    } else if (strcmp(str, "white") == 0) {
+        *color = LED_WHITE;
+    } else if (strcmp(str, "warm") == 0) {
+        *color = LED_WARM_WHITE;
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
+static bool cliIsLedAlias(const char *cmd_str)
+{
+    return strncmp(cmd_str, "led", 3) == 0 &&
+           cmd_str[3] >= '1' && cmd_str[3] <= '3' &&
+           cmd_str[4] == '\0';
 }

@@ -1,84 +1,61 @@
 #include "led.h"
+#include "pwm.h"
 
-#define LED_COUNT             1
-#define LED_UART              huart3
-#define LED_UART_INSTANCE     USART3
-#define LED_UART_BAUDRATE     9600
-#define LED_RX_BUFFER_SIZE    32
+#define LED_COUNT             3
+#define LED_PWM_CH_PER_LED    3
 
 typedef struct {
-    GPIO_TypeDef *rg_port;
-    uint16_t rg_pin;
+    GPIO_TypeDef *r_port;
+    uint16_t r_pin;
+    GPIO_TypeDef *g_port;
+    uint16_t g_pin;
     GPIO_TypeDef *b_port;
     uint16_t b_pin;
-    LED_COLOR color;
-    uint8_t brightness;
-} led_tbl_t;
+} led_pin_t;
 
-LED_COLOR getLedColor(uint8_t id);
-
-static led_tbl_t led_tbl[LED_COUNT] = {
-    {GPIOF, GPIO_PIN_14, GPIOF, GPIO_PIN_15, LED_OFF, 0},
+static const led_pin_t led_tbl[LED_COUNT] = {
+    /* LED1: D2 PF15(R), D3 PE13(G), D4 PF14(B) */
+    {GPIOF, GPIO_PIN_15, GPIOE, GPIO_PIN_13, GPIOF, GPIO_PIN_14},
+    /* LED2: D5 PE11(R), D6 PE9(G), D7 PF13(B) */
+    {GPIOE, GPIO_PIN_11, GPIOE, GPIO_PIN_9, GPIOF, GPIO_PIN_13},
+    /* LED3: D8 PF12(R), D9 PD15(G), D10 PD14(B) */
+    {GPIOF, GPIO_PIN_12, GPIOD, GPIO_PIN_15, GPIOD, GPIO_PIN_14},
 };
 
-static uint8_t led_rx_data;
-static char led_rx_buffer[LED_RX_BUFFER_SIZE];
-static uint8_t led_rx_index;
+static LED_COLOR led_state[LED_COUNT];
+static uint8_t led_power[LED_COUNT] = {100, 100, 100};
 
-static void ledWrite(uint8_t id, GPIO_PinState rg_state, GPIO_PinState b_state);
-static void ledSetCommandColor(uint8_t id, const char *color);
-static void ledUartStartReceive(void);
-static void ledUartSendString(const char *str);
-static int ledStringEqual(const char *a, const char *b);
+static void ledGpioInit(void);
+static void ledProcessCommand(const char *cmd);
+static void ledSetRgb(uint8_t id, uint8_t red, uint8_t green, uint8_t blue);
+static uint8_t ledPwmChannel(uint8_t id, uint8_t color_index);
+static bool ledParseCommand(const char *cmd, uint8_t *id, LED_COLOR *color);
+static bool ledReadToken(const char **cmd, char *token, uint8_t token_size);
+static bool ledStringEqual(const char *a, const char *b);
+static bool ledColorFromString(const char *str, LED_COLOR *color);
 
 void ledInit(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    ledGpioInit();
+    for (uint8_t i = 0; i < LED_COUNT; i++) {
+        pwmGpioAttach(ledPwmChannel(i, 0), led_tbl[i].r_port, led_tbl[i].r_pin);
+        pwmGpioAttach(ledPwmChannel(i, 1), led_tbl[i].g_port, led_tbl[i].g_pin);
+        pwmGpioAttach(ledPwmChannel(i, 2), led_tbl[i].b_port, led_tbl[i].b_pin);
+        setLedColor(i, LED_OFF);
+    }
+}
 
-    __HAL_RCC_GPIOF_CLK_ENABLE();
-
-    GPIO_InitStruct.Pin = GPIO_PIN_14 | GPIO_PIN_15;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-    LED_UART.Init.BaudRate = LED_UART_BAUDRATE;
-    HAL_UART_Init(&LED_UART);
-    HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(USART3_IRQn);
-
-    setLedColor(0, LED_OFF);
-    ledUartStartReceive();
-    ledUartSendString("LED UART ready\r\n");
+void ledUpdate(void)
+{
 }
 
 void ledCommandProcess(const char *cmd)
 {
-    uint8_t id = 0;
-    const char *color = cmd;
-
     if (cmd == NULL) {
         return;
     }
 
-    while (*color == ' ') {
-        color++;
-    }
-
-    if ((color[0] == 'l' || color[0] == 'L') &&
-        (color[1] == 'e' || color[1] == 'E') &&
-        (color[2] == 'd' || color[2] == 'D') &&
-        color[3] >= '1' && color[3] <= '9') {
-        id = (uint8_t)(color[3] - '1');
-        color += 4;
-
-        while (*color == ' ') {
-            color++;
-        }
-    }
-
-    ledSetCommandColor(id, color);
+    ledProcessCommand(cmd);
 }
 
 void setLedColor(uint8_t id, LED_COLOR color)
@@ -87,33 +64,21 @@ void setLedColor(uint8_t id, LED_COLOR color)
         return;
     }
 
-    led_tbl[id].color = color;
+    led_state[id] = color;
 
     switch (color) {
-        case LED_OFF:
-            ledWrite(id, GPIO_PIN_RESET, GPIO_PIN_RESET);
-            break;
-
         case LED_YELLOW:
-            ledWrite(id, GPIO_PIN_SET, GPIO_PIN_RESET);
+            ledSetRgb(id, 100, 35, 0);
             break;
-
         case LED_WHITE:
+            ledSetRgb(id, 100, 65, 45);
+            break;
         case LED_WARM_WHITE:
-            ledWrite(id, GPIO_PIN_SET, GPIO_PIN_SET);
+            ledSetRgb(id, 100, 62, 24);
             break;
-
-        case LED_RED:
-        case LED_GREEN:
-            ledWrite(id, GPIO_PIN_SET, GPIO_PIN_RESET);
-            break;
-
-        case LED_BLUE:
-            ledWrite(id, GPIO_PIN_RESET, GPIO_PIN_SET);
-            break;
-
+        case LED_OFF:
         default:
-            ledWrite(id, GPIO_PIN_RESET, GPIO_PIN_RESET);
+            ledSetRgb(id, 0, 0, 0);
             break;
     }
 }
@@ -124,7 +89,7 @@ LED_COLOR getLedColor(uint8_t id)
         return LED_OFF;
     }
 
-    return led_tbl[id].color;
+    return led_state[id];
 }
 
 void setLedPower(uint8_t id, uint8_t brightness)
@@ -133,11 +98,12 @@ void setLedPower(uint8_t id, uint8_t brightness)
         return;
     }
 
-    led_tbl[id].brightness = brightness;
-
-    if (brightness == 0) {
-        setLedColor(id, LED_OFF);
+    if (brightness > 100) {
+        brightness = 100;
     }
+
+    led_power[id] = brightness;
+    setLedColor(id, led_state[id]);
 }
 
 uint8_t getLedPower(uint8_t id)
@@ -146,45 +112,125 @@ uint8_t getLedPower(uint8_t id)
         return 0;
     }
 
-    return led_tbl[id].brightness;
+    return led_power[id];
 }
 
-static void ledWrite(uint8_t id, GPIO_PinState rg_state, GPIO_PinState b_state)
+static void ledGpioInit(void)
 {
-    HAL_GPIO_WritePin(led_tbl[id].rg_port, led_tbl[id].rg_pin, rg_state);
-    HAL_GPIO_WritePin(led_tbl[id].b_port, led_tbl[id].b_pin, b_state);
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+    __HAL_RCC_GPIOF_CLK_ENABLE();
+
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+
+    GPIO_InitStruct.Pin = GPIO_PIN_14 | GPIO_PIN_15;
+    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_9 | GPIO_PIN_11 | GPIO_PIN_13;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 }
 
-static void ledSetCommandColor(uint8_t id, const char *color)
+static void ledProcessCommand(const char *cmd)
 {
-    if (ledStringEqual(color, "off")) {
-        setLedColor(id, LED_OFF);
-        ledUartSendString("LED off\r\n");
-    } else if (ledStringEqual(color, "yellow")) {
-        setLedColor(id, LED_YELLOW);
-        ledUartSendString("LED yellow\r\n");
-    } else if (ledStringEqual(color, "white")) {
-        setLedColor(id, LED_WHITE);
-        ledUartSendString("LED white\r\n");
-    } else if (ledStringEqual(color, "warm")) {
-        setLedColor(id, LED_WARM_WHITE);
-        ledUartSendString("LED warm\r\n");
-    } else {
-        ledUartSendString("Unknown command\r\n");
+    LED_COLOR color;
+    uint8_t id;
+
+    if (!ledParseCommand(cmd, &id, &color)) {
+        return;
     }
+
+    setLedColor(id, color);
 }
 
-static void ledUartStartReceive(void)
+static void ledSetRgb(uint8_t id, uint8_t red, uint8_t green, uint8_t blue)
 {
-    HAL_UART_Receive_IT(&LED_UART, &led_rx_data, 1);
+    if (id >= LED_COUNT) {
+        return;
+    }
+
+    pwmGpioWrite(ledPwmChannel(id, 0), (uint8_t)((red * led_power[id]) / 100));
+    pwmGpioWrite(ledPwmChannel(id, 1), (uint8_t)((green * led_power[id]) / 100));
+    pwmGpioWrite(ledPwmChannel(id, 2), (uint8_t)((blue * led_power[id]) / 100));
 }
 
-static void ledUartSendString(const char *str)
+static uint8_t ledPwmChannel(uint8_t id, uint8_t color_index)
 {
-    HAL_UART_Transmit(&LED_UART, (uint8_t *)str, (uint16_t)strlen(str), 100);
+    return (uint8_t)((id * LED_PWM_CH_PER_LED) + color_index);
 }
 
-static int ledStringEqual(const char *a, const char *b)
+static bool ledParseCommand(const char *cmd, uint8_t *id, LED_COLOR *color)
+{
+    char first[8];
+    char second[8];
+    char third[8];
+    const char *cursor = cmd;
+
+    if (!ledReadToken(&cursor, first, sizeof(first))) {
+        return false;
+    }
+
+    if (!ledStringEqual(first, "led")) {
+        return false;
+    }
+
+    if (!ledReadToken(&cursor, second, sizeof(second))) {
+        return false;
+    }
+
+    if (second[0] < '1' || second[0] > '3' || second[1] != '\0') {
+        return false;
+    }
+
+    *id = (uint8_t)(second[0] - '1');
+
+    if (!ledReadToken(&cursor, third, sizeof(third))) {
+        return false;
+    }
+
+    while (*cursor == ' ') {
+        cursor++;
+    }
+
+    if (*cursor != '\0') {
+        return false;
+    }
+
+    return ledColorFromString(third, color);
+}
+
+static bool ledReadToken(const char **cmd, char *token, uint8_t token_size)
+{
+    uint8_t index = 0;
+
+    while (**cmd == ' ') {
+        (*cmd)++;
+    }
+
+    if (**cmd == '\0') {
+        return false;
+    }
+
+    while (**cmd != '\0' && **cmd != ' ') {
+        if (index >= (token_size - 1)) {
+            return false;
+        }
+
+        token[index++] = **cmd;
+        (*cmd)++;
+    }
+
+    token[index] = '\0';
+    return true;
+}
+
+static bool ledStringEqual(const char *a, const char *b)
 {
     while (*a != '\0' && *b != '\0') {
         char ca = *a;
@@ -199,16 +245,29 @@ static int ledStringEqual(const char *a, const char *b)
         }
 
         if (ca != cb) {
-            return 0;
+            return false;
         }
 
         a++;
         b++;
     }
 
-    while (*a == ' ') {
-        a++;
+    return (*a == '\0' && *b == '\0');
+}
+
+static bool ledColorFromString(const char *str, LED_COLOR *color)
+{
+    if (ledStringEqual(str, "off")) {
+        *color = LED_OFF;
+    } else if (ledStringEqual(str, "yellow")) {
+        *color = LED_YELLOW;
+    } else if (ledStringEqual(str, "white")) {
+        *color = LED_WHITE;
+    } else if (ledStringEqual(str, "warm")) {
+        *color = LED_WARM_WHITE;
+    } else {
+        return false;
     }
 
-    return (*a == '\0' && *b == '\0');
+    return true;
 }
