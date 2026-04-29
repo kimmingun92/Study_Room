@@ -1,0 +1,18 @@
+# ninja log v7
+10	734	7991479426712523	StudyRoom_qt_autogen/timestamp	8f77a85141f21b52
+10	734	7991479426712523	StudyRoom_qt_autogen/mocs_compilation.cpp	8f77a85141f21b52
+10	734	7991479426712523	G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/StudyRoom_qt_autogen/timestamp	8f77a85141f21b52
+10	734	7991479426712523	G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/StudyRoom_qt_autogen/mocs_compilation.cpp	8f77a85141f21b52
+739	3094	7991479427347728	CMakeFiles/StudyRoom_qt.dir/StudyRoom_qt_autogen/mocs_compilation.cpp.obj	7d6c023b207a88c
+746	3095	7991479427407111	CMakeFiles/StudyRoom_qt.dir/main.cpp.obj	3116d7cca411764c
+752	3550	7991479427467091	CMakeFiles/StudyRoom_qt.dir/mainserver.cpp.obj	3a817ed96efb0035
+19	63	7991493890349048	CMakeFiles/clean.additional	d83d71b739a6bc64
+63	76	7991493890796354	clean	7b037816d5af7aea
+24	718	7991494156728615	StudyRoom_qt_autogen/timestamp	8f77a85141f21b52
+24	718	7991494156728615	StudyRoom_qt_autogen/mocs_compilation.cpp	8f77a85141f21b52
+24	718	7991494156728615	G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/StudyRoom_qt_autogen/timestamp	8f77a85141f21b52
+24	718	7991494156728615	G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/StudyRoom_qt_autogen/mocs_compilation.cpp	8f77a85141f21b52
+719	2910	7991494157324755	CMakeFiles/StudyRoom_qt.dir/StudyRoom_qt_autogen/mocs_compilation.cpp.obj	e6cdd1394a502a1c
+725	2955	7991494157385516	CMakeFiles/StudyRoom_qt.dir/main.cpp.obj	46049fd90fba80f6
+731	3490	7991494157434759	CMakeFiles/StudyRoom_qt.dir/mainserver.cpp.obj	87c93adcbfb61885
+3490	3687	7991494185032311	StudyRoom_qt.exe	cfe1bd586c1b3780
