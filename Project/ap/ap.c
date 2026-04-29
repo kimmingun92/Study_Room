@@ -45,9 +45,11 @@ void tcpClientSystemTask(void *argument)
 
                 // 5. 서버로부터 데이터 수신 대기 루프
                 struct netbuf *buf;
+                void *data;
+                uint16_t len;
                 while (netconn_recv(conn, &buf) == ERR_OK) {
-                    // 서버가 보낸 $CMD...# 데이터 처리 로직을 여기에 작성
-                    // ...
+                    netbuf_data(buf, &data, &len);
+                    cliPrintf("Server Message: %.*s\r\n", len, (char*)data);
                     netbuf_delete(buf);
                 }
             }
