@@ -5,8 +5,11 @@
 
 static uint8_t dht_tem = 0;
 static uint8_t dht_hum = 0;
+static volatile bool dht_is_on = false;
+static volatile uint32_t dht_interval_ms = 2000;
+static volatile uint32_t dht_prev_time = 0;
 
-extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim2;
 
 static void delay_us(uint32_t us)
 {
@@ -122,6 +125,67 @@ bool dhtRead(void)
     }
 
     return true;
+}
+
+void cliDht(uint8_t argc, char *argv[])
+{
+    if (argc == 1)
+    {
+        dht_interval_ms = 2000;
+        dht_is_on = true;
+        dht_prev_time = millis() - dht_interval_ms;
+        cliPrintf("dht on %dms\r\n", dht_interval_ms);
+    }
+    else if (argc == 2 && strcmp(argv[1], "off") == 0)
+    {
+        dht_is_on = false;
+        cliPrintf("dht off\r\n");
+    }
+    else if (argc == 2)
+    {
+        uint32_t interval_ms = (uint32_t)atoi(argv[1]);
+
+        if (interval_ms < 2000)
+        {
+            cliPrintf("Usage: dht [period_ms >= 2000]\r\n");
+            cliPrintf("       dht off\r\n");
+            return;
+        }
+
+        dht_interval_ms = interval_ms;
+        dht_is_on = true;
+        dht_prev_time = millis() - dht_interval_ms;
+        cliPrintf("dht on %dms\r\n", dht_interval_ms);
+    }
+    else
+    {
+        cliPrintf("Usage: dht [period_ms >= 2000]\r\n");
+        cliPrintf("       dht off\r\n");
+    }
+}
+
+void dhtMain(void)
+{
+    if (dht_is_on == false)
+    {
+        return;
+    }
+
+    if (millis() - dht_prev_time < dht_interval_ms)
+    {
+        return;
+    }
+
+    dht_prev_time = millis();
+
+    if (dhtRead())
+    {
+        cliPrintf("$%d,%d#\r\n", getTem(), getHum());
+    }
+    else
+    {
+        cliPrintf("$Error#\r\n");
+    }
 }
 
 uint8_t getTem(void)

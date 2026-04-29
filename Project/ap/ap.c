@@ -20,4 +20,13 @@ void apInit()
 void apMain()
 {
     cliMain();
+    dhtMain();
+    osDelay(10);
+}
+
+void StartTask02(void *argument)
+{
+    while (1) {
+        osDelay(10);
+    }
 }
