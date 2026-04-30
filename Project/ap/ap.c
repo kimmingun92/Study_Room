@@ -25,7 +25,7 @@ void tcpClientSystemTask(void *argument)
     err_t err;
     ip_addr_t server_addr;
 
-    // 1. 서버 IP 주소 설정 (PC의 IP 주소를 적으세요)
+    // 1. 서버 IP 주소 설정
     IP_ADDR4(&server_addr, 10, 10, 16, 9);
 
     while (1) {
