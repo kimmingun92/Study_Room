@@ -306,6 +306,70 @@ static void cliDoor(uint8_t argc, char *argv[])
     }
 }
 
+static void cliIr(uint8_t argc, char *argv[])
+{
+    uint32_t period;
+
+    if (argc == 1)
+    {
+        cliPrintf("Usage:\r\n");
+        cliPrintf("  ir on [period_ms]\r\n");
+        cliPrintf("  ir off\r\n");
+        cliPrintf("  ir read\r\n");
+        return;
+    }
+
+    // ----------- 현재 값 1번 읽기 -----------
+    if (strcmp(argv[1], "read") == 0)
+    {
+        irSensorPrintValue();
+        return;
+    }
+
+    // ----------- OFF -----------
+    if (strcmp(argv[1], "off") == 0)
+    {
+        if (irSensorGetMonitor() == IR_MON_OFF)
+        {
+            cliPrintf("ir already off\r\n");
+            return;
+        }
+
+        irSensorSetMonitor(IR_MON_OFF);
+        cliPrintf("ir off\r\n");
+        return;
+    }
+
+    // ----------- ON period 설정 -----------
+    if (strcmp(argv[1], "on") == 0)
+    {
+        if (argc != 3)
+        {
+            cliPrintf("Usage: ir on [period_ms]\r\n");
+            return;
+        }
+
+        period = atoi(argv[2]);
+
+        if (period == 0)
+        {
+            cliPrintf("invalid period\r\n");
+            return;
+        }
+
+        irSensorSetPeriod(period);
+        irSensorSetMonitor(IR_MON_ON);
+
+        cliPrintf("ir on %dms\r\n", period);
+        return;
+    }
+
+    cliPrintf("Usage:\r\n");
+    cliPrintf("  ir on [period_ms]\r\n");
+    cliPrintf("  ir off\r\n");
+    cliPrintf("  ir read\r\n");
+}
+
 void cliInit(void)
 {
     cli_cmd_cnt = 0;
@@ -324,6 +388,7 @@ void cliInit(void)
     cliAdd("dht", cliDht);
     cliAdd("door", cliDoor);
     cliAdd("led", cliLed);
+    cliAdd("ir", cliIr);
 }
 
 void cliRunCommand(void)
