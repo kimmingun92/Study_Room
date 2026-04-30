@@ -65,7 +65,14 @@ const osThreadAttr_t dhtTask_attributes = {
 osThreadId_t tcpTaskHandle;
 const osThreadAttr_t tcpTask_attributes = {
   .name = "tcpTask",
-  .stack_size = 1024 * 4,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for irSensorTask */
+osThreadId_t irSensorTaskHandle;
+const osThreadAttr_t irSensorTask_attributes = {
+  .name = "irSensorTask",
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
 
@@ -77,6 +84,7 @@ const osThreadAttr_t tcpTask_attributes = {
 void StartDefaultTask(void *argument);
 void dhtSystemTask(void *argument);
 void tcpClientSystemTask(void *argument);
+void irSensorSystemTask(void *argument);
 
 extern void MX_LWIP_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -116,6 +124,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of tcpTask */
   tcpTaskHandle = osThreadNew(tcpClientSystemTask, NULL, &tcpTask_attributes);
+
+  /* creation of irSensorTask */
+  irSensorTaskHandle = osThreadNew(irSensorSystemTask, NULL, &irSensorTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -181,6 +192,24 @@ __weak void tcpClientSystemTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END tcpClientSystemTask */
+}
+
+/* USER CODE BEGIN Header_irSensorSystemTask */
+/**
+* @brief Function implementing the irSensorTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_irSensorSystemTask */
+__weak void irSensorSystemTask(void *argument)
+{
+  /* USER CODE BEGIN irSensorSystemTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END irSensorSystemTask */
 }
 
 /* Private application code --------------------------------------------------*/

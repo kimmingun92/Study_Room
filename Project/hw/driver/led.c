@@ -236,13 +236,13 @@ static bool ledStringEqual(const char *a, const char *b)
         char ca = *a;
         char cb = *b;
 
-        if (ca >= 'A' && ca <= 'Z') {
-            ca = (char)(ca - 'A' + 'a');
-        }
+//         if (ca >= 'A' && ca <= 'Z') {
+//             ca = (char)(ca - 'A' + 'a');
+//         }
 
-        if (cb >= 'A' && cb <= 'Z') {
-            cb = (char)(cb - 'A' + 'a');
-        }
+//         if (cb >= 'A' && cb <= 'Z') {
+//             cb = (char)(cb - 'A' + 'a');
+//         }
 
         if (ca != cb) {
             return false;

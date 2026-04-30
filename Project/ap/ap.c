@@ -16,6 +16,15 @@ void dhtSystemTask(void *argument)
 {
     for (;;) {
         dhtMain();
+        osDelay(10);
+    }
+}
+
+void irSensorSystemTask(void *argument)
+{
+    for (;;) {
+        irSensorMain();
+        osDelay(10);
     }
 }
 

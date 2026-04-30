@@ -3,9 +3,10 @@
 void hwInit(void)
 {
     uartInit();
-    dhtInit();
     cliInit();
-    ledInit();
     logInit();
+    dhtInit();
+    ledInit();
     servoInit();
+    irSensorInit();
 }
