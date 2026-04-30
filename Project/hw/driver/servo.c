@@ -2,8 +2,6 @@
 
 extern TIM_HandleTypeDef htim3;
 
-#define SERVO_COUNT 4
-
 #define SERVO_CLOSE_US  600
 #define SERVO_OPEN_US   1200
 

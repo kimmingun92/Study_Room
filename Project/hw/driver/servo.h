@@ -2,7 +2,6 @@
 #define __HW_DRIVER_SERVO_H_
 
 #include "hw_def.h"
-#include "pwm.h"
 
 #define DOOR_CLOSE false
 #define DOOR_OPEN  true
