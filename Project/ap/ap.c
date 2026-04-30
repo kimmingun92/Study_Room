@@ -1,5 +1,4 @@
 #include "ap.h"
-#include "servo.h"
 
 extern struct netif gnetif;
 
@@ -22,6 +21,7 @@ void apMain()
 {
     cliMain();
     dhtMain();
+    irSensorMain();
     osDelay(10);
 }
 

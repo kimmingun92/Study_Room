@@ -7,4 +7,5 @@ void hwInit(void)
     cliInit();
     logInit();
     servoInit();
+    irSensorInit();
 }
