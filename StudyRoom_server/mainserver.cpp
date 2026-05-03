@@ -47,6 +47,8 @@ void MainServer::onReadyRead() {
         QByteArray data = senderSocket->readLine();
         QString senderIp = senderSocket->peerAddress().toString();
 
+        qDebug() << "Data received from" << senderSocket->peerAddress().toString() << ":" << data;
+
         ui->logView->append(QString("[%1] %2").arg(senderIp).arg(QString(data)));
 
         // 데이터 중계 로직

@@ -21,7 +21,7 @@ void MainClient::on_connectBtn_clicked()
 {
     if(tcpSocket->state() != QAbstractSocket::ConnectedState){
         // 나중에 10.10.16.9로 변경
-        tcpSocket->connectToHost("127.0.0.1", 5000);
+        tcpSocket->connectToHost("10.10.16.9", 5000);
 
         if(tcpSocket->waitForConnected(3000)){
             ui->statusLabel->setText("Status: Connected");
@@ -37,7 +37,10 @@ void MainClient::on_sendBtn_clicked()
         QString cmd = ui->cmdInput->text();
 
         if (!cmd.isEmpty()) {
-            tcpSocket->write(cmd.toUtf8());
+            QByteArray data = (cmd + "\n").toUtf8();
+            tcpSocket->write(data);
+            tcpSocket->flush();
+
             ui->logText->append("Sent: " + cmd);
             ui->cmdInput->clear();
         }
