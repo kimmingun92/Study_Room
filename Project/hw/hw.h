@@ -10,6 +10,7 @@
 #include "log.h"
 #include "servo.h"
 #include "ir_sensor.h"
+#include "motor_r300.h"
 
 void hwInit(void);
 

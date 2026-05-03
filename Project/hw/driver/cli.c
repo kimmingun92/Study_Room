@@ -1,9 +1,8 @@
 #include "cli.h"
-#include "led.h"
 
 #define CLI_LINE_BUF_MAX 64
 #define CLI_CMD_LIST_MAX 32
-#define CLI_CMD_ARG_MAX 4
+#define CLI_CMD_ARG_MAX 6
 
 typedef struct {
     char cmd_str[16];
@@ -369,7 +368,6 @@ static void cliIr(uint8_t argc, char *argv[])
     cliPrintf("  ir off\r\n");
     cliPrintf("  ir read\r\n");
 }
-
 void cliInit(void)
 {
     cli_cmd_cnt = 0;
@@ -389,6 +387,7 @@ void cliInit(void)
     cliAdd("door", cliDoor);
     cliAdd("led", cliLed);
     cliAdd("ir", cliIr);
+    cliAdd("motor", cliMotorR300);
 }
 
 void cliRunCommand(void)

@@ -2,6 +2,9 @@
 
 extern struct netif gnetif;
 
+
+
+
 void StartDefaultTask(void *argument)
 {
     MX_LWIP_Init();

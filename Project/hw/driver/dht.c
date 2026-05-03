@@ -1,13 +1,15 @@
 #include "dht.h"
+#include "motor_r300.h"
 
 #define DHT_PORT GPIOA
 #define DHT_PIN  GPIO_PIN_3
 
 static uint8_t dht_tem = 0;
 static uint8_t dht_hum = 0;
-static volatile bool dht_is_on = false;
+static volatile bool dht_print_on = false;
 static volatile uint32_t dht_interval_ms = 2000;
 static volatile uint32_t dht_prev_time = 0;
+bool isAutoMotor = true;
 
 extern TIM_HandleTypeDef htim2;
 
@@ -132,14 +134,24 @@ void cliDht(uint8_t argc, char *argv[])
     if (argc == 1)
     {
         dht_interval_ms = 2000;
-        dht_is_on = true;
+        dht_print_on = true;
         dht_prev_time = millis() - dht_interval_ms;
         cliPrintf("dht on %dms\r\n", dht_interval_ms);
     }
     else if (argc == 2 && strcmp(argv[1], "off") == 0)
     {
-        dht_is_on = false;
-        cliPrintf("dht off\r\n");
+        dht_print_on = false;
+        cliPrintf("dht off\r\n");   
+    }
+    else if (argc == 2 && strcmp(argv[1], "status") == 0)
+    {
+        cliPrintf("dht %s %dms\r\n", dht_print_on ? "on" : "off", dht_interval_ms);
+        cliPrintf("range T:%d~%d H:%d~%d\r\n",
+                  motorR300GetTempMin(), motorR300GetTempMax(),
+                  motorR300GetHumMin(), motorR300GetHumMax());
+        cliPrintf("motor %s pulse off:%d on:%d\r\n",
+                  motorR300IsOn() ? "on" : "off",
+                  motorR300GetOffPulse(), motorR300GetOnPulse());
     }
     else if (argc == 2)
     {
@@ -153,38 +165,42 @@ void cliDht(uint8_t argc, char *argv[])
         }
 
         dht_interval_ms = interval_ms;
-        dht_is_on = true;
+        dht_print_on = true;
         dht_prev_time = millis() - dht_interval_ms;
         cliPrintf("dht on %dms\r\n", dht_interval_ms);
     }
     else
     {
         cliPrintf("Usage: dht [period_ms >= 2000]\r\n");
+        cliPrintf("       dht status\r\n");
         cliPrintf("       dht off\r\n");
     }
 }
 
 void dhtMain(void)
 {
-    if (dht_is_on == false)
+    if (millis() - dht_prev_time >= dht_interval_ms)
     {
-        return;
-    }
+        dht_prev_time = millis();
 
-    if (millis() - dht_prev_time < dht_interval_ms)
-    {
-        return;
-    }
+        if (dhtRead())
+        {
+            if(isAutoMotor){
+                motorR300Update(getTem(), getHum());
+            }
 
-    dht_prev_time = millis();
-
-    if (dhtRead())
-    {
-        cliPrintf("$%d,%d#\r\n", getTem(), getHum());
-    }
-    else
-    {
-        cliPrintf("$Error#\r\n");
+            if (dht_print_on == true)
+            {
+                cliPrintf("$%d,%d#\r\n", getTem(), getHum());
+            }
+        }
+        else
+        {
+            if (dht_print_on == true)
+            {
+                cliPrintf("$Error#\r\n");
+            }
+        }
     }
 }
 
