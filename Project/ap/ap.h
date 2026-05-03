@@ -2,6 +2,7 @@
 #define __AP_AP_H_
 
 #include "bsp.h"
+#include "tcp.h"
 #include "hw_def.h"
 #include "def.h"
 

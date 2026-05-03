@@ -63,6 +63,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Project/common
     Project/hw
     Project/hw/driver
+    Project/network
 )
 
 # Add project symbols (macros)
