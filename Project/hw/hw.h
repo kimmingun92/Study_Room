@@ -10,6 +10,8 @@
 #include "log.h"
 #include "servo.h"
 #include "ir_sensor.h"
+#include "my_rfid.h"
+#include "my_spi.h"
 
 void hwInit(void);
 

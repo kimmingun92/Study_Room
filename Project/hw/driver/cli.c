@@ -370,6 +370,63 @@ static void cliIr(uint8_t argc, char *argv[])
     cliPrintf("  ir read\r\n");
 }
 
+static void cliRfid(uint8_t argc, char *argv[])
+{
+    rfid_uid_t uid;
+
+    if (argc != 2)
+    {
+        cliPrintf("Usage:\r\n");
+        cliPrintf("  rfid uid\r\n");
+        cliPrintf("  rfid read\r\n");
+        cliPrintf("  rfid off\r\n");
+        return;
+    }
+
+    if (strcmp(argv[1], "uid") == 0)
+    {
+        cliPrintf("RFID UID scan start...\r\n");
+
+        for (int i = 0; i < 100; i++)
+        {
+            if (rfidReadUid(&uid) == RFID_OK)
+            {
+                cliPrintf("UID: ");
+
+                for (uint8_t j = 0; j < uid.size; j++)
+                {
+                    cliPrintf("%02X ", uid.bytes[j]);
+                }
+
+                cliPrintf("\r\n");
+                return;
+            }
+
+            osDelay(100);
+        }
+
+        cliPrintf("RFID UID scan timeout\r\n");
+    }
+    else if (strcmp(argv[1], "read") == 0)
+    {
+        rfidSetMonitor(true);
+        cliPrintf("RFID read ON\r\n");
+    }
+    else if (strcmp(argv[1], "off") == 0)
+    {
+        rfidSetMonitor(false);
+        cliPrintf("RFID read OFF\r\n");
+    }
+    else
+    {
+        cliPrintf("Unknown rfid command\r\n");
+        cliPrintf("Usage:\r\n");
+        cliPrintf("  rfid uid\r\n");
+        cliPrintf("  rfid read\r\n");
+        cliPrintf("  rfid off\r\n");
+    }
+}
+
 void cliInit(void)
 {
     cli_cmd_cnt = 0;
@@ -389,6 +446,7 @@ void cliInit(void)
     cliAdd("door", cliDoor);
     cliAdd("led", cliLed);
     cliAdd("ir", cliIr);
+    cliAdd("rfid", cliRfid);
 }
 
 void cliRunCommand(void)

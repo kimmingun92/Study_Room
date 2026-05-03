@@ -9,4 +9,5 @@ void hwInit(void)
     ledInit();
     servoInit();
     irSensorInit();
+    rfidInit(); 
 }

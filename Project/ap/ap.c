@@ -80,5 +80,6 @@ void apInit()
 void apMain()
 {
     cliMain();
+    rfidProcess();
     osDelay(10);
 }
