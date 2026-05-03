@@ -11,4 +11,5 @@ void hwInit(void)
     servoInit();
     irSensorInit();
     motorR300Init();
+    rfidInit(); 
 }
