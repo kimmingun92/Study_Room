@@ -1,9 +1,0 @@
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/StudyRoom_qt.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/edit_cache.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/rebuild_cache.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/list_install_components.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/install.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/install/local.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/install/strip.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/StudyRoom_qt_autogen_timestamp_deps.dir
-G:/Project/STM/StudyRoom_qt/StudyRoom_qt/build/Desktop_x86_windows_msvc2026_pe_64bit-Debug/CMakeFiles/StudyRoom_qt_autogen.dir
