@@ -124,7 +124,28 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="ledColor"/>
+        <widget class="QComboBox" name="ledColor">
+         <item>
+          <property name="text">
+           <string>Off</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Yellow</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>White</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Warm White</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </widget>

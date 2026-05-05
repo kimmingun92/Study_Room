@@ -7,12 +7,11 @@ MainClient::MainClient(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->stackedWidget->setCurrentIndex(0);
     seatButtons << ui->btn_seat_1 << ui->btn_seat_2 << ui->btn_seat_3;
 
     tcpSocket = new QTcpSocket(this);
-
     connect(tcpSocket, &QTcpSocket::readyRead, this, &MainClient::readServerData);
-
     tcpSocket->connectToHost("10.10.16.9", 5000);
 }
 
@@ -86,7 +85,7 @@ void MainClient::sendCommand(int id, int type, QVariant value) {
 void MainClient::on_ledColor_currentIndexChanged(int index)
 {
     int ledId = 50 + (selectedSeatNumber - 1);
-    sendCommand(ledId, 0, index + 1);
+    sendCommand(ledId, 0, index);
 }
 
 void MainClient::on_fanSpeed_valueChanged(int arg1)
