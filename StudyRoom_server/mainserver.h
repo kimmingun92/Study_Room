@@ -24,11 +24,14 @@ private slots:
     void onNewConnection();
     void onReadyRead();
     void onDisconnected();
+    void sendUsedSeatsList(QTcpSocket* socket);
 
 private:
     Ui::MainServer *ui;
     QTcpServer *m_server;
     QList<QTcpSocket*> m_clients;
     QTcpSocket *m_boardSocket = nullptr;
+    QMap<QTcpSocket*, int> m_seatMap;
+    bool seatStatus[3] = {false, false, false};
 };
 #endif // MAINSERVER_H

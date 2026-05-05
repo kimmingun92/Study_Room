@@ -32,6 +32,8 @@ void MainServer::onNewConnection(){
         } else {
             m_clients.append(socket);
             ui->logView->append("Client connected from " + clientIp);
+
+            sendUsedSeatsList(socket);
         }
 
         connect(socket, &QTcpSocket::readyRead, this, &MainServer::onReadyRead);
@@ -39,27 +41,58 @@ void MainServer::onNewConnection(){
     }
 }
 
+void MainServer::sendUsedSeatsList(QTcpSocket* socket) {
+    QStringList usedSeats;
+    // m_seatMap에 저장된 좌석 번호들을 수집
+    for (int seatNum : m_seatMap.values()) {
+        usedSeats << QString::number(seatNum);
+    }
+
+    QString msg = "USED_SEATS:" + usedSeats.join(",");
+    socket->write(msg.toUtf8());
+}
+
 void MainServer::onReadyRead() {
     QTcpSocket *senderSocket = qobject_cast<QTcpSocket*>(sender());
     if (!senderSocket) return;
 
-    while (senderSocket->canReadLine()) {
-        QByteArray data = senderSocket->readLine();
-        QString senderIp = senderSocket->peerAddress().toString();
+    // 보드 데이터는 줄바꿈(\n)이 없을 수 있으므로 readAll() 고려
+    // 여기서는 기존 구조를 유지하며 입실 처리를 추가
+    QByteArray data = senderSocket->readAll();
+    QString msg = QString::fromUtf8(data).trimmed();
+    QString senderIp = senderSocket->peerAddress().toString();
 
-        qDebug() << "Data received from" << senderSocket->peerAddress().toString() << ":" << data;
+    ui->logView->append(QString("[%1] %2").arg(senderIp).arg(msg));
 
-        ui->logView->append(QString("[%1] %2").arg(senderIp).arg(QString(data)));
-
-        // 데이터 중계 로직
-        if (senderSocket == m_boardSocket) {
-            // 1. 보드에서 온 데이터($DATA...) -> 모든 클라이언트(사용자 앱)에게 전송
-            for (QTcpSocket *client : m_clients) {
+    // 1. 보드에서 온 데이터 중계
+    if (senderSocket == m_boardSocket) {
+        for (QTcpSocket *client : m_clients) {
+            // 입실 완료(좌석 매핑됨)된 클라이언트에게만 보드 데이터 전송
+            if (m_seatMap.contains(client)) {
                 client->write(data);
                 client->flush();
             }
-        } else {
-            // 2. 앱에서 온 데이터($CMD...) -> 보드에게 전송
+        }
+    }
+    // 2. 클라이언트에서 온 데이터 처리
+    else {
+        // 입실 요청 처리: "ENTER:번호"
+        if (msg.startsWith("ENTER:")) {
+            int seatNum = msg.mid(6).toInt();
+            m_seatMap.insert(senderSocket, seatNum); // IP(소켓)와 좌석 번호 매핑
+
+            ui->logView->append(QString("입실 완료: %1번 자리 (IP: %2)").arg(seatNum).arg(senderIp));
+            senderSocket->write("ENTRY_SUCCESS"); // 클라이언트에게 성공 알림
+        }else if (msg.startsWith("EXIT:")) {
+            int seatNum = msg.mid(5).toInt();
+
+            // 매핑 테이블에서 제거하여 자리 비움 처리[cite: 1]
+            m_seatMap.remove(senderSocket);
+
+            ui->logView->append(QString("퇴실 완료: %1번 자리 (IP: %2)").arg(seatNum).arg(senderIp));
+        }
+        // 일반 제어 명령($CMD...) -> 보드로 전송
+        else if (msg.startsWith("$CMD")) {
             if(m_boardSocket && m_boardSocket->state() == QAbstractSocket::ConnectedState){
                 m_boardSocket->write(data);
                 m_boardSocket->flush();
@@ -73,8 +106,13 @@ void MainServer::onReadyRead() {
 void MainServer::onDisconnected() {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     if (socket) {
-        if (socket == m_boardSocket) m_boardSocket = nullptr;
-        m_clients.removeAll(socket);
+        if (socket == m_boardSocket) {
+            m_boardSocket = nullptr;
+        } else {
+            // 퇴실 처리: 매핑 정보 삭제[cite: 1]
+            m_seatMap.remove(socket);
+            m_clients.removeAll(socket);
+        }
         ui->logView->append("접속 종료: " + socket->peerAddress().toString());
         socket->deleteLater();
     }
