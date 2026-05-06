@@ -25,6 +25,7 @@ private slots:
     void onReadyRead();
     void onDisconnected();
     void sendUsedSeatsList(QTcpSocket* socket);
+    void broadcastUsedSeats(QTcpSocket* socket);
 
 private:
     Ui::MainServer *ui;

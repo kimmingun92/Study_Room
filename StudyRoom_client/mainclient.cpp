@@ -59,16 +59,26 @@ void MainClient::readServerData(){
     QString msg = QString::fromUtf8(data);
 
     if(msg.startsWith("USED_SEATS:")){
-        // "USED_SEATS:2,3" -> "2,3" 추출
-        QStringList usedSeats = msg.mid(11).split(",");
+        // 모든 좌석 버튼을 먼저 초기화 (흰색 & 활성화)
+        for (QPushButton* btn : seatButtons) {
+            btn->setStyleSheet("background-color: white;");
+            btn->setEnabled(true);
+        }
 
-        for (const QString &seatNum : usedSeats) {
-            int index = seatNum.toInt() - 1; // 버튼 인덱스는 0부터 시작
+        // 서버에서 받은 목록만 회색으로 변경
+        QStringList usedSeats = msg.mid(11).split(",");
+        for (const QString &seatNumStr : usedSeats) {
+            if (seatNumStr.isEmpty()) continue;
+            int index = seatNumStr.toInt() - 1;
             if (index >= 0 && index < seatButtons.size()) {
-                // 이미 입실된 자리는 회색으로 만들고 클릭 비활성화
                 seatButtons[index]->setStyleSheet("background-color: gray;");
                 seatButtons[index]->setEnabled(false);
             }
+        }
+
+        // 내가 현재 선택 중인 자리가 있다면 다시 파란색으로 표시
+        if (selectedSeatNumber > 0 && seatButtons[selectedSeatNumber-1]->isEnabled()) {
+            seatButtons[selectedSeatNumber-1]->setStyleSheet("background-color: blue; color: white;");
         }
     } else if(msg == "ENTRY_SUCCESS"){
         ui->stackedWidget->setCurrentIndex(1);
@@ -123,4 +133,3 @@ void MainClient::on_exitButton_clicked()
     // 다시 좌석 선택 페이지(Index 0)로 이동
     ui->stackedWidget->setCurrentIndex(0);
 }
-
