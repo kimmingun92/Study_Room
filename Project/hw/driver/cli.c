@@ -194,6 +194,7 @@ void cliInit(void)
     cliAdd("info", cliInfo);
     cliAdd("sys", cliSys);
     cliAdd("log", cliLog);
+    cliAdd("th", cliThermal);
 }
 
 void cliRunCommand(void)

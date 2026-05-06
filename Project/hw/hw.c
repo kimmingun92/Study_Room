@@ -5,4 +5,6 @@ void hwInit(void)
     uartInit();
     cliInit();
     logInit();
+    thermalInit();
+    oledInit();
 }

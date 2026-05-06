@@ -7,6 +7,8 @@
 #include "led.h"
 #include "uart.h"
 #include "ir_receiver.h"
+#include "oled.h"
+#include "thermal.h"
 #include "cli.h"
 #include "log.h"
 
