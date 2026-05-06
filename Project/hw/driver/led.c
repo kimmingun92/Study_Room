@@ -1,8 +1,10 @@
 #include "led.h"
+
 #include "pwm.h"
 
-#define LED_COUNT             3
-#define LED_PWM_CH_PER_LED    3
+
+#define LED_COUNT 3
+#define LED_PWM_CH_PER_LED 3
 
 typedef struct {
     GPIO_TypeDef *r_port;
@@ -67,19 +69,19 @@ void setLedColor(uint8_t id, LED_COLOR color)
     led_state[id] = color;
 
     switch (color) {
-        case LED_YELLOW:
-            ledSetRgb(id, 100, 35, 0);
-            break;
-        case LED_WHITE:
-            ledSetRgb(id, 100, 65, 45);
-            break;
-        case LED_WARM_WHITE:
-            ledSetRgb(id, 100, 62, 24);
-            break;
-        case LED_OFF:
-        default:
-            ledSetRgb(id, 0, 0, 0);
-            break;
+    case LED_YELLOW:
+        ledSetRgb(id, 100, 35, 0);
+        break;
+    case LED_WHITE:
+        ledSetRgb(id, 100, 65, 45);
+        break;
+    case LED_WARM_WHITE:
+        ledSetRgb(id, 100, 62, 24);
+        break;
+    case LED_OFF:
+    default:
+        ledSetRgb(id, 0, 0, 0);
+        break;
     }
 }
 
@@ -236,13 +238,13 @@ static bool ledStringEqual(const char *a, const char *b)
         char ca = *a;
         char cb = *b;
 
-//         if (ca >= 'A' && ca <= 'Z') {
-//             ca = (char)(ca - 'A' + 'a');
-//         }
+        //         if (ca >= 'A' && ca <= 'Z') {
+        //             ca = (char)(ca - 'A' + 'a');
+        //         }
 
-//         if (cb >= 'A' && cb <= 'Z') {
-//             cb = (char)(cb - 'A' + 'a');
-//         }
+        //         if (cb >= 'A' && cb <= 'Z') {
+        //             cb = (char)(cb - 'A' + 'a');
+        //         }
 
         if (ca != cb) {
             return false;

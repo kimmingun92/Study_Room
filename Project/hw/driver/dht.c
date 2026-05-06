@@ -1,8 +1,10 @@
 #include "dht.h"
+
 #include "motor_r300.h"
 
+
 #define DHT_PORT GPIOA
-#define DHT_PIN  GPIO_PIN_3
+#define DHT_PIN GPIO_PIN_3
 
 static uint8_t dht_tem = 0;
 static uint8_t dht_hum = 0;
@@ -17,8 +19,7 @@ static void delay_us(uint32_t us)
 {
     __HAL_TIM_SET_COUNTER(&htim2, 0);
 
-    while (__HAL_TIM_GET_COUNTER(&htim2) < us)
-    {
+    while (__HAL_TIM_GET_COUNTER(&htim2) < us) {
     }
 }
 
@@ -49,10 +50,8 @@ static bool waitPin(GPIO_PinState state, uint32_t timeout_us)
 {
     __HAL_TIM_SET_COUNTER(&htim2, 0);
 
-    while (HAL_GPIO_ReadPin(DHT_PORT, DHT_PIN) != state)
-    {
-        if (__HAL_TIM_GET_COUNTER(&htim2) > timeout_us)
-        {
+    while (HAL_GPIO_ReadPin(DHT_PORT, DHT_PIN) != state) {
+        if (__HAL_TIM_GET_COUNTER(&htim2) > timeout_us) {
             return false;
         }
     }
@@ -82,32 +81,34 @@ bool dhtRead(void)
 
     dhtSetInput();
 
-    if (waitPin(GPIO_PIN_RESET, 100) == false) return false;
-    if (waitPin(GPIO_PIN_SET,   100) == false) return false;
-    if (waitPin(GPIO_PIN_RESET, 100) == false) return false;
+    if (waitPin(GPIO_PIN_RESET, 100) == false)
+        return false;
+    if (waitPin(GPIO_PIN_SET, 100) == false)
+        return false;
+    if (waitPin(GPIO_PIN_RESET, 100) == false)
+        return false;
 
-    for (int i = 0; i < 40; i++)
-    {
-        if (waitPin(GPIO_PIN_SET, 100) == false) return false;
+    for (int i = 0; i < 40; i++) {
+        if (waitPin(GPIO_PIN_SET, 100) == false)
+            return false;
 
         __HAL_TIM_SET_COUNTER(&htim2, 0);
 
-        if (waitPin(GPIO_PIN_RESET, 120) == false) return false;
+        if (waitPin(GPIO_PIN_RESET, 120) == false)
+            return false;
 
         uint32_t high_time = __HAL_TIM_GET_COUNTER(&htim2);
 
         data[i / 8] <<= 1;
 
-        if (high_time > 40)
-        {
+        if (high_time > 40) {
             data[i / 8] |= 1;
         }
     }
 
     uint8_t checksum = data[0] + data[1] + data[2] + data[3];
 
-    if (checksum != data[4])
-    {
+    if (checksum != data[4]) {
         return false;
     }
 
@@ -116,13 +117,10 @@ bool dhtRead(void)
 
     dht_hum = raw_hum / 10;
 
-    if (raw_tem & 0x8000)
-    {
+    if (raw_tem & 0x8000) {
         raw_tem &= 0x7FFF;
         dht_tem = raw_tem / 10;
-    }
-    else
-    {
+    } else {
         dht_tem = raw_tem / 10;
     }
 
@@ -131,34 +129,24 @@ bool dhtRead(void)
 
 void cliDht(uint8_t argc, char *argv[])
 {
-    if (argc == 1)
-    {
+    if (argc == 1) {
         dht_interval_ms = 2000;
         dht_print_on = true;
         dht_prev_time = millis() - dht_interval_ms;
         cliPrintf("dht on %dms\r\n", dht_interval_ms);
-    }
-    else if (argc == 2 && strcmp(argv[1], "off") == 0)
-    {
+    } else if (argc == 2 && strcmp(argv[1], "off") == 0) {
         dht_print_on = false;
-        cliPrintf("dht off\r\n");   
-    }
-    else if (argc == 2 && strcmp(argv[1], "status") == 0)
-    {
+        cliPrintf("dht off\r\n");
+    } else if (argc == 2 && strcmp(argv[1], "status") == 0) {
         cliPrintf("dht %s %dms\r\n", dht_print_on ? "on" : "off", dht_interval_ms);
-        cliPrintf("range T:%d~%d H:%d~%d\r\n",
-                  motorR300GetTempMin(), motorR300GetTempMax(),
+        cliPrintf("range T:%d~%d H:%d~%d\r\n", motorR300GetTempMin(), motorR300GetTempMax(),
                   motorR300GetHumMin(), motorR300GetHumMax());
-        cliPrintf("motor %s pulse off:%d on:%d\r\n",
-                  motorR300IsOn() ? "on" : "off",
+        cliPrintf("motor %s pulse off:%d on:%d\r\n", motorR300IsOn() ? "on" : "off",
                   motorR300GetOffPulse(), motorR300GetOnPulse());
-    }
-    else if (argc == 2)
-    {
+    } else if (argc == 2) {
         uint32_t interval_ms = (uint32_t)atoi(argv[1]);
 
-        if (interval_ms < 2000)
-        {
+        if (interval_ms < 2000) {
             cliPrintf("Usage: dht [period_ms >= 2000]\r\n");
             cliPrintf("       dht off\r\n");
             return;
@@ -168,9 +156,7 @@ void cliDht(uint8_t argc, char *argv[])
         dht_print_on = true;
         dht_prev_time = millis() - dht_interval_ms;
         cliPrintf("dht on %dms\r\n", dht_interval_ms);
-    }
-    else
-    {
+    } else {
         cliPrintf("Usage: dht [period_ms >= 2000]\r\n");
         cliPrintf("       dht status\r\n");
         cliPrintf("       dht off\r\n");
@@ -179,25 +165,19 @@ void cliDht(uint8_t argc, char *argv[])
 
 void dhtMain(void)
 {
-    if (millis() - dht_prev_time >= dht_interval_ms)
-    {
+    if (millis() - dht_prev_time >= dht_interval_ms) {
         dht_prev_time = millis();
 
-        if (dhtRead())
-        {
-            if(isAutoMotor){
+        if (dhtRead()) {
+            if (isAutoMotor) {
                 motorR300Update(getTem(), getHum());
             }
 
-            if (dht_print_on == true)
-            {
+            if (dht_print_on == true) {
                 cliPrintf("$%d,%d#\r\n", getTem(), getHum());
             }
-        }
-        else
-        {
-            if (dht_print_on == true)
-            {
+        } else {
+            if (dht_print_on == true) {
                 cliPrintf("$Error#\r\n");
             }
         }

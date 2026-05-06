@@ -1,8 +1,8 @@
 #include "pwm.h"
 
-#define PWM_GPIO_CH_MAX      9
-#define PWM_GPIO_STEP_MAX    20
-#define PWM_GPIO_TICK_MS     1
+#define PWM_GPIO_CH_MAX 9
+#define PWM_GPIO_STEP_MAX 20
+#define PWM_GPIO_TICK_MS 1
 
 typedef struct {
     GPIO_TypeDef *port;
@@ -18,7 +18,7 @@ static osThreadId_t pwm_gpio_task_handle = NULL;
 static const osThreadAttr_t pwm_gpio_task_attributes = {
     .name = "pwmGpio",
     .stack_size = 128 * 4,
-    .priority = (osPriority_t) osPriorityLow,
+    .priority = (osPriority_t)osPriorityLow,
 };
 
 static void pwmGpioTask(void *argument);
@@ -77,8 +77,7 @@ static void pwmGpioTask(void *argument)
         for (uint8_t i = 0; i < PWM_GPIO_CH_MAX; i++) {
             if (pwm_gpio_tbl[i].is_used) {
                 uint8_t threshold = (uint8_t)((pwm_gpio_tbl[i].duty * PWM_GPIO_STEP_MAX) / 100);
-                HAL_GPIO_WritePin(pwm_gpio_tbl[i].port,
-                                  pwm_gpio_tbl[i].pin,
+                HAL_GPIO_WritePin(pwm_gpio_tbl[i].port, pwm_gpio_tbl[i].pin,
                                   step < threshold ? GPIO_PIN_SET : GPIO_PIN_RESET);
             }
         }

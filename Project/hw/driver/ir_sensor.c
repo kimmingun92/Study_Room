@@ -57,8 +57,7 @@ void irSensorMain(void)
     if (irMonitorState == IR_MON_OFF)
         return;
 
-    if (HAL_GetTick() - pre_time >= irPeriod)
-    {
+    if (HAL_GetTick() - pre_time >= irPeriod) {
         pre_time = HAL_GetTick();
 
         irSensorPrintValue();

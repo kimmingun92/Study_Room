@@ -2,9 +2,6 @@
 
 extern struct netif gnetif;
 
-
-
-
 void StartDefaultTask(void *argument)
 {
     MX_LWIP_Init();
@@ -36,6 +33,14 @@ void tcpClientSystemTask(void *argument)
     tcpMain();
 }
 
+void rfidSystemTask(void *argument)
+{
+    for (;;) {
+        rfidProcess();
+        osDelay(10);
+    }
+}
+
 void apInit()
 {
     hwInit();
@@ -44,6 +49,5 @@ void apInit()
 void apMain()
 {
     cliMain();
-    rfidProcess();
     osDelay(10);
 }

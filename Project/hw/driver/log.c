@@ -4,11 +4,11 @@ static uint8_t runtime_log_level = 3;
 
 void cliLog(uint8_t argc, char *argv[])
 {
-    if(argc == 2 && strcmp(argv[1], "get") == 0){
+    if (argc == 2 && strcmp(argv[1], "get") == 0) {
         cliPrintf("Current Log Level: %d\r\n", logGetLevel());
-    } else if(argc == 3 && strcmp(argv[1], "set") == 0){
+    } else if (argc == 3 && strcmp(argv[1], "set") == 0) {
         uint8_t level = atoi(argv[2]);
-        if(level <= 5){
+        if (level <= 5) {
             logSetLevel(level);
             cliPrintf("Log Level Set to %d\r\n", level);
         } else {
@@ -21,7 +21,8 @@ void cliLog(uint8_t argc, char *argv[])
     }
 }
 
-bool logInit(void){
+bool logInit(void)
+{
     return true;
 }
 
@@ -30,11 +31,13 @@ void logSetLevel(uint8_t level)
     runtime_log_level = level;
 }
 
-uint8_t logGetLevel(void){
+uint8_t logGetLevel(void)
+{
     return runtime_log_level;
 }
 
-uint8_t logGetRuntimeLevel(void){
+uint8_t logGetRuntimeLevel(void)
+{
     return runtime_log_level;
 }
 

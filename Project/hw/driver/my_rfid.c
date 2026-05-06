@@ -1,49 +1,49 @@
 #include "my_rfid.h"
 
 /* RC522 레지스터 */
-#define REG_COMMAND        0x01
-#define REG_COM_IEN        0x02
-#define REG_COM_IRQ        0x04
-#define REG_ERROR          0x06
-#define REG_FIFO_DATA      0x09
-#define REG_FIFO_LEVEL     0x0A
-#define REG_CONTROL        0x0C
-#define REG_BIT_FRAMING    0x0D
-#define REG_MODE           0x11
-#define REG_TX_CONTROL     0x14
-#define REG_TX_ASK         0x15
-#define REG_T_MODE         0x2A
-#define REG_T_PRESCALER    0x2B
-#define REG_T_RELOAD_H     0x2C
-#define REG_T_RELOAD_L     0x2D
-#define REG_VERSION        0x37
+#define REG_COMMAND 0x01
+#define REG_COM_IEN 0x02
+#define REG_COM_IRQ 0x04
+#define REG_ERROR 0x06
+#define REG_FIFO_DATA 0x09
+#define REG_FIFO_LEVEL 0x0A
+#define REG_CONTROL 0x0C
+#define REG_BIT_FRAMING 0x0D
+#define REG_MODE 0x11
+#define REG_TX_CONTROL 0x14
+#define REG_TX_ASK 0x15
+#define REG_T_MODE 0x2A
+#define REG_T_PRESCALER 0x2B
+#define REG_T_RELOAD_H 0x2C
+#define REG_T_RELOAD_L 0x2D
+#define REG_VERSION 0x37
 
-#define CMD_IDLE           0x00
-#define CMD_TRANSCEIVE     0x0C
-#define CMD_SOFT_RESET     0x0F
+#define CMD_IDLE 0x00
+#define CMD_TRANSCEIVE 0x0C
+#define CMD_SOFT_RESET 0x0F
 
-#define PICC_REQA          0x26
-#define PICC_ANTICOLL      0x93
+#define PICC_REQA 0x26
+#define PICC_ANTICOLL 0x93
 
-#define RFID_DOOR_COUNT    3
-#define RFID_OPEN_TIME_MS  5000
+#define RFID_DOOR_COUNT 3
+#define RFID_OPEN_TIME_MS 5000
 #define RFID_SCAN_DELAY_MS 1000
 
-typedef struct
-{
+typedef struct {
     uint8_t uid[4];
     uint8_t door_id;
 } RFID_User_t;
 
 /* 등록 카드 UID */
-static RFID_User_t rfid_user_tbl[] =
-{
-    { {0xED,0x89,0x6D,0x05}, 0 }, // 0번 방
-    { {0xCC,0xEF,0x4B,0x06}, 1 }, // 1번 방
-    { {0x11,0x22,0x33,0x44}, 2 }, // 수정 필요
+static RFID_User_t rfid_user_tbl[] = {
+    {{0xED, 0x89, 0x6D, 0x05}, 0}, // 0번 방
+    {{0xCC, 0xEF, 0x4B, 0x06}, 1}, // 1번 방
+    {{0x11, 0x22, 0x33, 0x44}, 2}, // 수정 필요
 };
 
-static uint32_t door_close_time[RFID_DOOR_COUNT] = {0, };
+static uint32_t door_close_time[RFID_DOOR_COUNT] = {
+    0,
+};
 static uint32_t last_scan_time = 0;
 static bool rfid_monitor = false;
 
@@ -99,8 +99,7 @@ static void rc522AntennaOn(void)
 {
     uint8_t temp = rc522ReadReg(REG_TX_CONTROL);
 
-    if ((temp & 0x03) != 0x03)
-    {
+    if ((temp & 0x03) != 0x03) {
         rc522SetBits(REG_TX_CONTROL, 0x03);
     }
 }
@@ -119,12 +118,12 @@ bool rfidInit(void)
 
     rc522Reset();
 
-    rc522WriteReg(REG_T_MODE,      0x8D);
+    rc522WriteReg(REG_T_MODE, 0x8D);
     rc522WriteReg(REG_T_PRESCALER, 0x3E);
-    rc522WriteReg(REG_T_RELOAD_L,  30);
-    rc522WriteReg(REG_T_RELOAD_H,  0);
-    rc522WriteReg(REG_TX_ASK,      0x40);
-    rc522WriteReg(REG_MODE,        0x3D);
+    rc522WriteReg(REG_T_RELOAD_L, 30);
+    rc522WriteReg(REG_T_RELOAD_H, 0);
+    rc522WriteReg(REG_TX_ASK, 0x40);
+    rc522WriteReg(REG_MODE, 0x3D);
 
     rc522AntennaOn();
 
@@ -137,11 +136,8 @@ uint8_t rfidGetVersion(void)
 }
 
 /* 카드 통신 핵심 */
-static rfid_status_t rc522ToCard(uint8_t cmd,
-                                 uint8_t *send_data,
-                                 uint8_t send_len,
-                                 uint8_t *back_data,
-                                 uint16_t *back_len)
+static rfid_status_t rc522ToCard(uint8_t cmd, uint8_t *send_data, uint8_t send_len,
+                                 uint8_t *back_data, uint16_t *back_len)
 {
     rfid_status_t status = RFID_ERROR;
     uint8_t irq_en = 0x00;
@@ -149,8 +145,7 @@ static rfid_status_t rc522ToCard(uint8_t cmd,
     uint8_t n;
     uint16_t i;
 
-    if (cmd == CMD_TRANSCEIVE)
-    {
+    if (cmd == CMD_TRANSCEIVE) {
         irq_en = 0x77;
         wait_irq = 0x30;
     }
@@ -163,8 +158,7 @@ static rfid_status_t rc522ToCard(uint8_t cmd,
     RFID_CS_LOW();
     spiTransferByte((REG_FIFO_DATA << 1) & 0x7E);
 
-    for (uint8_t k = 0; k < send_len; k++)
-    {
+    for (uint8_t k = 0; k < send_len; k++) {
         spiTransferByte(send_data[k]);
     }
 
@@ -172,15 +166,13 @@ static rfid_status_t rc522ToCard(uint8_t cmd,
 
     rc522WriteReg(REG_COMMAND, cmd);
 
-    if (cmd == CMD_TRANSCEIVE)
-    {
+    if (cmd == CMD_TRANSCEIVE) {
         rc522SetBits(REG_BIT_FRAMING, 0x80);
     }
 
     i = 50000;
 
-    do
-    {
+    do {
         n = rc522ReadReg(REG_COM_IRQ);
         i--;
     } while ((i != 0) && !(n & 0x01) && !(n & wait_irq));
@@ -193,8 +185,7 @@ static rfid_status_t rc522ToCard(uint8_t cmd,
     if (rc522ReadReg(REG_ERROR) & 0x1B)
         return RFID_ERROR;
 
-    if (n & wait_irq)
-    {
+    if (n & wait_irq) {
         uint8_t fifo_n = rc522ReadReg(REG_FIFO_LEVEL);
         uint8_t last_bits = rc522ReadReg(REG_CONTROL) & 0x07;
 
@@ -206,8 +197,7 @@ static rfid_status_t rc522ToCard(uint8_t cmd,
         else
             *back_len = fifo_n * 8;
 
-        for (uint8_t j = 0; j < fifo_n; j++)
-        {
+        for (uint8_t j = 0; j < fifo_n; j++) {
             back_data[j] = rc522ReadReg(REG_FIFO_DATA);
         }
 
@@ -222,7 +212,9 @@ rfid_status_t rfidReadUid(rfid_uid_t *uid)
 {
     uint8_t tag_type[2];
     uint8_t serial_buf[2];
-    uint8_t back_data[8] = {0, };
+    uint8_t back_data[8] = {
+        0,
+    };
     uint16_t back_bits = 0;
     uint8_t serial_check = 0;
 
@@ -247,8 +239,7 @@ rfid_status_t rfidReadUid(rfid_uid_t *uid)
     if (rc522ToCard(CMD_TRANSCEIVE, serial_buf, 2, back_data, &back_bits) != RFID_OK)
         return RFID_NOTAG;
 
-    for (uint8_t i = 0; i < 4; i++)
-    {
+    for (uint8_t i = 0; i < 4; i++) {
         serial_check ^= back_data[i];
     }
 
@@ -257,8 +248,7 @@ rfid_status_t rfidReadUid(rfid_uid_t *uid)
 
     uid->size = 4;
 
-    for (uint8_t i = 0; i < 4; i++)
-    {
+    for (uint8_t i = 0; i < 4; i++) {
         uid->bytes[i] = back_data[i];
     }
 
@@ -273,14 +263,11 @@ static int8_t rfidFindDoor(rfid_uid_t *uid)
     if (uid == NULL || uid->size != 4)
         return -1;
 
-    for (uint8_t i = 0; i < count; i++)
-    {
+    for (uint8_t i = 0; i < count; i++) {
         bool match = true;
 
-        for (uint8_t j = 0; j < 4; j++)
-        {
-            if (uid->bytes[j] != rfid_user_tbl[i].uid[j])
-            {
+        for (uint8_t j = 0; j < 4; j++) {
+            if (uid->bytes[j] != rfid_user_tbl[i].uid[j]) {
                 match = false;
                 break;
             }
@@ -311,10 +298,8 @@ void rfidProcess(void)
     uint32_t now = millis();
 
     /* 15초 지난 문 자동 닫기 */
-    for (uint8_t i = 0; i < RFID_DOOR_COUNT; i++)
-    {
-        if (door_close_time[i] != 0 && now >= door_close_time[i])
-        {
+    for (uint8_t i = 0; i < RFID_DOOR_COUNT; i++) {
+        if (door_close_time[i] != 0 && now >= door_close_time[i]) {
             changeDoorState(i, DOOR_CLOSE);
             door_close_time[i] = 0;
         }
@@ -330,12 +315,10 @@ void rfidProcess(void)
 
     last_scan_time = now;
 
-    if (rfidReadUid(&uid) == RFID_OK)
-    {
+    if (rfidReadUid(&uid) == RFID_OK) {
         int8_t door_id = rfidFindDoor(&uid);
 
-        if (door_id >= 0 && door_id < RFID_DOOR_COUNT)
-        {
+        if (door_id >= 0 && door_id < RFID_DOOR_COUNT) {
             changeDoorState(door_id, DOOR_OPEN);
             door_close_time[door_id] = now + RFID_OPEN_TIME_MS;
         }
