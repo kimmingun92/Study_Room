@@ -396,6 +396,7 @@ void cliInit(void)
     cliAdd("ir", cliIr);
     cliAdd("motor", cliMotorR300);
     cliAdd("rfid", cliRfid);
+    cliAdd("th", cliThermal);
 }
 
 void cliRunCommand(void)

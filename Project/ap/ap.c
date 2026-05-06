@@ -12,6 +12,11 @@ void StartDefaultTask(void *argument)
     }
 }
 
+void thermalSystemTask(void *argument)
+{
+    thermalMain();
+}
+
 void dhtSystemTask(void *argument)
 {
     for (;;) {
@@ -43,7 +48,7 @@ void rfidSystemTask(void *argument)
 
 void apInit()
 {
-    hwInit();
+    hwInit();   
 }
 
 void apMain()

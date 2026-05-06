@@ -1,4 +1,5 @@
 #include "tcp.h"
+#include "cmsis_os2.h"
 
 static void parseProtocol(void *data, uint16_t len)
 {
@@ -101,7 +102,7 @@ void tcpMain()
             if (err == ERR_OK) {
                 LOG_INF("[TCP] 서버 접속 성공!");
 
-                char *msg = "$DATA,BOARD,READY#\n";
+                char *msg = "@BOARD:READY\n";
                 netconn_write(conn, msg, strlen(msg), NETCONN_COPY);
 
                 struct netbuf *buf;
@@ -127,6 +128,7 @@ void tcpMain()
                         LOG_ERR("[TCP] 연결 끊김 또는 수신 에러 발생 (Code: %d)", (int)recv_err);
                         break;
                     }
+                    osDelay(10);
                 }
             } else {
                 LOG_ERR("[TCP] 접속 실패! (에러 코드: %d)", (int)err);

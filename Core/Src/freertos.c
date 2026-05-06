@@ -82,6 +82,13 @@ const osThreadAttr_t rfidTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for thermalTask */
+osThreadId_t thermalTaskHandle;
+const osThreadAttr_t thermalTask_attributes = {
+  .name = "thermalTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -93,6 +100,7 @@ void dhtSystemTask(void *argument);
 void tcpClientSystemTask(void *argument);
 void irSensorSystemTask(void *argument);
 void rfidSystemTask(void *argument);
+void thermalSystemTask(void *argument);
 
 extern void MX_LWIP_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -138,6 +146,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of rfidTask */
   rfidTaskHandle = osThreadNew(rfidSystemTask, NULL, &rfidTask_attributes);
+
+  /* creation of thermalTask */
+  thermalTaskHandle = osThreadNew(thermalSystemTask, NULL, &thermalTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -239,6 +250,24 @@ __weak void rfidSystemTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END rfidSystemTask */
+}
+
+/* USER CODE BEGIN Header_thermalSystemTask */
+/**
+* @brief Function implementing the thermalTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_thermalSystemTask */
+__weak void thermalSystemTask(void *argument)
+{
+  /* USER CODE BEGIN thermalSystemTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END thermalSystemTask */
 }
 
 /* Private application code --------------------------------------------------*/

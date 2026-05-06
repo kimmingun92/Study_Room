@@ -12,4 +12,6 @@ void hwInit(void)
     irSensorInit();
     motorR300Init();
     rfidInit(); 
+    thermalInit();
+    oledInit();
 }
