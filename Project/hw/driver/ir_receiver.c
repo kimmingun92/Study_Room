@@ -105,13 +105,3 @@ void irReceiverExtiCallback(uint16_t GPIO_Pin)
         temp_code = 0;
     }
 }
-
-/*
- * HAL GPIO EXTI Callback
- * PA0 인터럽트가 발생하면 HAL에서 이 함수로 들어온다.
- * 버튼을 사용하지 않고 IR Receiver만 사용하므로 여기서 바로 IR 콜백으로 넘긴다.
- */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-    irReceiverExtiCallback(GPIO_Pin);
-}

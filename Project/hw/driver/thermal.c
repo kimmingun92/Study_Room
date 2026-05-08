@@ -1,5 +1,42 @@
 #include "thermal.h"
 
+extern I2C_HandleTypeDef hi2c1;
+#define MLX_TIMEOUT 1000
+
+int MLX90640_I2CRead(uint8_t slaveAddr, uint16_t startAddress, uint16_t nMemAddressRead, uint16_t *data) {
+    // MLX90640은 Big-Endian 방식을 사용하므로 수신 후 Byte Swap이 필요합니다.
+    if (HAL_I2C_Mem_Read(&hi2c1, (slaveAddr << 1), startAddress, I2C_MEMADD_SIZE_16BIT, (uint8_t *)data, nMemAddressRead * 2, MLX_TIMEOUT) != HAL_OK) {
+        return -1;
+    }
+
+    // 엔디언 변환 (Big-Endian to Little-Endian)
+    for (uint16_t i = 0; i < nMemAddressRead; i++) {
+        uint16_t value = data[i];
+        data[i] = (value << 8) | (value >> 8);
+    }
+    return 0;
+}
+
+int MLX90640_I2CWrite(uint8_t slaveAddr, uint16_t writeAddress, uint16_t data) {
+    uint8_t buf[2];
+    buf[0] = (uint8_t)(data >> 8);
+    buf[1] = (uint8_t)(data & 0x00FF);
+
+    if (HAL_I2C_Mem_Write(&hi2c1, (slaveAddr << 1), writeAddress, I2C_MEMADD_SIZE_16BIT, buf, 2, MLX_TIMEOUT) != HAL_OK) {
+        return -1;
+    }
+    return 0;
+}
+
+int MLX90640_I2CGeneralReset(void) {
+    // General Call Reset (0x00 주소에 0x06 전송)
+    uint8_t resetCmd = 0x06;
+    if (HAL_I2C_Master_Transmit(&hi2c1, 0x00, &resetCmd, 1, MLX_TIMEOUT) != HAL_OK) {
+        return -1;
+    }
+    return 0;
+}
+
 void thermalInit(void)
 {
     if (HAL_I2C_IsDeviceReady(&hi2c1, DEV_ADDR, 3, TIMEOUT) == HAL_OK)
@@ -425,12 +462,16 @@ void cliThermal(uint8_t argc, char *argv[])
     }
 }
 
+extern volatile bool dht_read;
+
 void thermalMain(void)
 {
     static uint16_t frame_buf[MLX90640_FRAME_WORD_COUNT];
     static uint16_t eeprom_buf[MLX90640_EEPROM_WORD_COUNT];
     static float temp_buf[MLX90640_PIXEL_COUNT];
     static thermal_params_t params;
+
+    uint8_t subpage = 0;
 
     if (thermalReadCalibData(eeprom_buf) == true)
     {
@@ -439,7 +480,12 @@ void thermalMain(void)
 
     while (1)
     {
-        if (thermalReadFrame(frame_buf) == true)
+        if(dht_read){
+            osDelay(50);
+            continue;
+        }
+
+        if (thermalReadFrameSynced(frame_buf, &subpage) == true)
         {
             float ta = thermalCalculateTa(frame_buf, &params);
 
@@ -452,7 +498,7 @@ void thermalMain(void)
             oledDrawThermal(temp_buf);
         }
 
-        osDelay(10);
+        osDelay(20);
     }
 }
 

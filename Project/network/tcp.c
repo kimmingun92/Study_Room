@@ -1,5 +1,4 @@
 #include "tcp.h"
-#include "cmsis_os2.h"
 
 static void parseProtocol(void *data, uint16_t len)
 {
