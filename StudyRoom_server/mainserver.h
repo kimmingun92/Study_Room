@@ -5,11 +5,10 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QList>
+#include <QMap>
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainServer;
-}
+namespace Ui { class MainServer; }
 QT_END_NAMESPACE
 
 class MainServer : public QMainWindow
@@ -24,15 +23,19 @@ private slots:
     void onNewConnection();
     void onReadyRead();
     void onDisconnected();
-    void sendUsedSeatsList(QTcpSocket* socket);
-    void broadcastUsedSeats(QTcpSocket* socket);
 
 private:
+    void sendUsedSeatsList(QTcpSocket *socket);
+    void broadcastUsedSeats();                    // 전체 브로드캐스트
+    void processClientMessage(QTcpSocket *socket, const QString &msg);
+    void processBoardMessage(QTcpSocket *socket, const QByteArray &raw, const QString &msg);
+
     Ui::MainServer *ui;
-    QTcpServer *m_server;
-    QList<QTcpSocket*> m_clients;
-    QTcpSocket *m_boardSocket = nullptr;
-    QMap<QTcpSocket*, int> m_seatMap;
-    bool seatStatus[3] = {false, false, false};
+    QTcpServer     *m_server;
+    QList<QTcpSocket*>       m_clients;
+    QTcpSocket              *m_boardSocket = nullptr;
+    QMap<QTcpSocket*, int>   m_seatMap;
+    QMap<QTcpSocket*, QString> m_recvBuffers; // TCP 버퍼
 };
-#endif // MAINSERVER_H
+
+#endif

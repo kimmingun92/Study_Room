@@ -6,12 +6,56 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>450</height>
+    <width>400</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainClient</string>
+   <string>Seat Control Client</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QMainWindow {
+    background-color: #F1F5F9;
+}
+QPushButton {
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px;
+}
+QPushButton:disabled {
+    background-color: #9CA3AF;
+    color: #E5E7EB;
+}
+QLabel {
+    color: #1E293B;
+}
+QComboBox, QSpinBox {
+    border: 1px solid #CBD5E1;
+    border-radius: 6px;
+    padding: 4px 8px;
+    background-color: white;
+    font-size: 13px;
+    min-height: 28px;
+}
+QSlider::groove:horizontal {
+    height: 6px;
+    background: #E2E8F0;
+    border-radius: 3px;
+}
+QSlider::handle:horizontal {
+    background: #2563EB;
+    width: 18px;
+    height: 18px;
+    margin: -6px 0;
+    border-radius: 9px;
+}
+QSlider::sub-page:horizontal {
+    background: #2563EB;
+    border-radius: 3px;
+}
+   </string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QStackedWidget" name="stackedWidget">
@@ -19,31 +63,110 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>350</width>
-      <height>450</height>
+      <width>400</width>
+      <height>498</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="loginPage">
-     <widget class="QWidget" name="horizontalLayoutWidget">
+     <widget class="QLabel" name="loginTitleLabel">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>40</y>
+        <width>400</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size: 20px; font-weight: bold; color: #1E293B;</string>
+      </property>
+      <property name="text">
+       <string>좌석을 선택하세요</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="loginSubLabel">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>78</y>
+        <width>400</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size: 12px; color: #64748B;</string>
+      </property>
+      <property name="text">
+       <string>사용 가능한 좌석을 선택한 뒤 입실 버튼을 눌러주세요</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QFrame" name="loginDivider">
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>60</y>
-        <width>291</width>
-        <height>101</height>
+        <y>112</y>
+        <width>340</width>
+        <height>2</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="styleSheet">
+       <string notr="true">color: #E2E8F0;</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::HLine</enum>
+      </property>
+     </widget>
+     <widget class="QWidget" name="seatButtonContainer">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>134</y>
+        <width>340</width>
+        <height>140</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="seatHLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QPushButton" name="btn_seat_1">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-           <horstretch>0</horstretch>
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+background-color: white;
+color: #1E293B;
+border: 2px solid #E2E8F0;
+border-radius: 12px;
+font-size: 28px;
+font-weight: bold;
+          </string>
          </property>
          <property name="text">
           <string>1</string>
@@ -53,10 +176,20 @@
        <item>
         <widget class="QPushButton" name="btn_seat_2">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-           <horstretch>0</horstretch>
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+background-color: white;
+color: #1E293B;
+border: 2px solid #E2E8F0;
+border-radius: 12px;
+font-size: 28px;
+font-weight: bold;
+          </string>
          </property>
          <property name="text">
           <string>2</string>
@@ -66,10 +199,20 @@
        <item>
         <widget class="QPushButton" name="btn_seat_3">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-           <horstretch>0</horstretch>
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+background-color: white;
+color: #1E293B;
+border: 2px solid #E2E8F0;
+border-radius: 12px;
+font-size: 28px;
+font-weight: bold;
+          </string>
          </property>
          <property name="text">
           <string>3</string>
@@ -78,14 +221,100 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="legendContainer">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>286</y>
+        <width>340</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="legendLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="legendAvail">
+         <property name="styleSheet">
+          <string notr="true">font-size: 11px; color: #2563EB;</string>
+         </property>
+         <property name="text">
+          <string>■ 선택됨</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="legendUsed">
+         <property name="styleSheet">
+          <string notr="true">font-size: 11px; color: #9CA3AF;</string>
+         </property>
+         <property name="text">
+          <string>■ 사용중</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Policy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
      <widget class="QPushButton" name="enterButton">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>260</y>
-        <width>141</width>
-        <height>61</height>
+        <x>30</x>
+        <y>370</y>
+        <width>340</width>
+        <height>56</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: #2563EB;
+color: white;
+border-radius: 12px;
+font-size: 16px;
+font-weight: bold;
+border: none;
+       </string>
       </property>
       <property name="text">
        <string>입실</string>
@@ -93,125 +322,442 @@
      </widget>
     </widget>
     <widget class="QWidget" name="mainPage">
-     <widget class="QLabel" name="seatInfoLabel">
+     <widget class="QFrame" name="headerFrame">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>191</width>
-        <height>31</height>
+        <x>0</x>
+        <y>0</y>
+        <width>400</width>
+        <height>80</height>
        </rect>
       </property>
-      <property name="text">
-       <string>좌석 번호 : </string>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: #1E293B;
+border-radius: 0px;
+       </string>
       </property>
+      <widget class="QLabel" name="seatInfoLabel">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>12</y>
+         <width>200</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size: 18px; font-weight: bold; color: white;</string>
+       </property>
+       <property name="text">
+        <string>좌석 번호 : </string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="elapsedTimeLabel">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>44</y>
+         <width>280</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font-size: 13px; color: #94A3B8;</string>
+       </property>
+       <property name="text">
+        <string>입실 시간: 00:00:00</string>
+       </property>
+      </widget>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_2">
+     <widget class="QFrame" name="ledCard">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>70</y>
-        <width>221</width>
-        <height>41</height>
+        <x>20</x>
+        <y>100</y>
+        <width>360</width>
+        <height>100</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="styleSheet">
+       <string notr="true">
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    </string>
+      </property>
+      <layout class="QVBoxLayout" name="ledCardLayout">
+       <property name="leftMargin">
+        <number>16</number>
+       </property>
+       <property name="topMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>16</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="ledSectionLabel">
+         <property name="styleSheet">
+          <string notr="true">
+    font-size: 11px;
+    font-weight: bold;
+    color: #64748B;
+    background: transparent;
+    border: none;
+        </string>
+         </property>
          <property name="text">
-          <string>LED 색상</string>
+          <string>LED 색상 설정</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="ledColor">
+        <layout class="QHBoxLayout" name="ledButtonRow">
+         <property name="spacing">
+          <number>8</number>
+         </property>
          <item>
-          <property name="text">
-           <string>Off</string>
-          </property>
+          <widget class="QPushButton" name="btnLedOff">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+    QPushButton {
+    background-color: #1E293B;
+    color: #94A3B8;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    }
+        </string>
+           </property>
+           <property name="text">
+            <string>Off</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>Yellow</string>
-          </property>
+          <widget class="QPushButton" name="btnLedYellow">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+    QPushButton {
+    background-color: #FEF9C3;
+    color: #854D0E;
+    border: 2px solid #FDE047;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    }
+        </string>
+           </property>
+           <property name="text">
+            <string>Yellow</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>White</string>
-          </property>
+          <widget class="QPushButton" name="btnLedWhite">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+    QPushButton {
+    background-color: #F8FAFC;
+    color: #475569;
+    border: 2px solid #CBD5E1;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    }
+        </string>
+           </property>
+           <property name="text">
+            <string>White</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>Warm White</string>
-          </property>
+          <widget class="QPushButton" name="btnLedWarm">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+    QPushButton {
+    background-color: #FFF7ED;
+    color: #9A3412;
+    border: 2px solid #FDBA74;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    }
+        </string>
+           </property>
+           <property name="text">
+            <string>Warm</string>
+           </property>
+          </widget>
          </item>
-        </widget>
+        </layout>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_3">
+     <widget class="QFrame" name="fanCard">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>130</y>
-        <width>221</width>
-        <height>41</height>
+        <x>20</x>
+        <y>216</y>
+        <width>360</width>
+        <height>96</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="styleSheet">
+       <string notr="true">
+background-color: white;
+border-radius: 12px;
+border: 1px solid #E2E8F0;
+       </string>
+      </property>
+      <layout class="QVBoxLayout" name="fanCardLayout">
+       <property name="leftMargin">
+        <number>16</number>
+       </property>
+       <property name="topMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>16</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
        <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>에어컨 세기</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="fanLabelRow">
+         <item>
+          <widget class="QLabel" name="fanSectionLabel">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11px; font-weight: bold; color: #64748B; background: transparent; border: none;</string>
+           </property>
+           <property name="text">
+            <string>에어컨 세기</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Policy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="fanSpeedValueLabel">
+           <property name="styleSheet">
+            <string notr="true">font-size: 12px; color: #2563EB; font-weight: bold; background: transparent; border: none;</string>
+           </property>
+           <property name="text">
+            <string>단계: 1</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QSpinBox" name="fanSpeed">
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>4</number>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="fanSliderRow">
+         <item>
+          <widget class="QLabel" name="fanLowLabel">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11px; color: #94A3B8; background: transparent; border: none;</string>
+           </property>
+           <property name="text">
+            <string>약</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="fanSpeed">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>4</number>
+           </property>
+           <property name="value">
+            <number>1</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TickPosition::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="fanHighLabel">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11px; color: #94A3B8; background: transparent; border: none;</string>
+           </property>
+           <property name="text">
+            <string>강</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget_4">
+     <widget class="QFrame" name="doorCard">
       <property name="geometry">
        <rect>
-        <x>60</x>
-        <y>190</y>
-        <width>221</width>
-        <height>41</height>
+        <x>20</x>
+        <y>328</y>
+        <width>360</width>
+        <height>80</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="styleSheet">
+       <string notr="true">
+background-color: white;
+border-radius: 12px;
+border: 1px solid #E2E8F0;
+       </string>
+      </property>
+      <layout class="QVBoxLayout" name="doorCardLayout">
+       <property name="leftMargin">
+        <number>16</number>
+       </property>
+       <property name="topMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>16</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
        <item>
-        <widget class="QPushButton" name="doorOpenButton">
+        <widget class="QLabel" name="doorSectionLabel">
+         <property name="styleSheet">
+          <string notr="true">font-size: 11px; font-weight: bold; color: #64748B; background: transparent; border: none;</string>
+         </property>
          <property name="text">
-          <string>문 열기</string>
+          <string>문 제어</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="doorCloseButton">
-         <property name="text">
-          <string>문 닫기</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="doorButtonRow">
+         <item>
+          <widget class="QPushButton" name="doorOpenButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+background-color: #DCFCE7;
+color: #15803D;
+border: 1px solid #86EFAC;
+border-radius: 8px;
+font-size: 14px;
+font-weight: bold;
+padding: 8px;
+            </string>
+           </property>
+           <property name="text">
+            <string>열기</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="doorCloseButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">
+background-color: #FEE2E2;
+color: #DC2626;
+border: 1px solid #FCA5A5;
+border-radius: 8px;
+font-size: 14px;
+font-weight: bold;
+padding: 8px;
+            </string>
+           </property>
+           <property name="text">
+            <string>닫기</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
      <widget class="QPushButton" name="exitButton">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>260</y>
-        <width>131</width>
-        <height>31</height>
+        <x>20</x>
+        <y>426</y>
+        <width>360</width>
+        <height>52</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+background-color: #EF4444;
+color: white;
+border-radius: 12px;
+font-size: 16px;
+font-weight: bold;
+border: none;
+       </string>
       </property>
       <property name="text">
        <string>퇴실</string>
@@ -225,7 +771,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>350</width>
+     <width>400</width>
      <height>22</height>
     </rect>
    </property>
