@@ -7,7 +7,6 @@ void thermalInit(void)
         uartPrintf(0, "mlx detected!!\r\n");
         
         uint16_t status = 0;
-        uint8_t refresh_rate = 4;
 
         if (thermalReadRegister(0x8000, &status) == true)
         {
@@ -432,6 +431,8 @@ void thermalMain(void)
     static float temp_buf[MLX90640_PIXEL_COUNT];
     static thermal_params_t params;
 
+    uint8_t subpage = 0;
+
     if (thermalReadCalibData(eeprom_buf) == true)
     {
         thermalExtractParameters(eeprom_buf, &params);
@@ -439,7 +440,7 @@ void thermalMain(void)
 
     while (1)
     {
-        if (thermalReadFrame(frame_buf) == true)
+        if (thermalReadFrameSynced(frame_buf, &subpage) == true)
         {
             float ta = thermalCalculateTa(frame_buf, &params);
 
@@ -452,7 +453,7 @@ void thermalMain(void)
             oledDrawThermal(temp_buf);
         }
 
-        osDelay(10);
+        osDelay(20);
     }
 }
 
