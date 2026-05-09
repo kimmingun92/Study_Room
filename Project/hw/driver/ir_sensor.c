@@ -1,7 +1,9 @@
 #include "ir_sensor.h"
+#include "servo.h"
 
 static bool irMonitorState = IR_MON_OFF;
 static uint32_t irPeriod = 1000;
+static uint32_t last_scan_time = 0;
 
 void irSensorInit(void)
 {
@@ -53,6 +55,16 @@ void irSensorPrintValue(void)
 void irSensorMain(void)
 {
     static uint32_t pre_time = 0;
+    uint32_t now = millis();
+
+    if(irSensorIsDetected()){
+        last_scan_time = millis();
+        changeDoorState(3, true);
+    }
+
+    if(now - last_scan_time > 5000 && getDoorState(3)){
+        changeDoorState(3, false);
+    }
 
     if (irMonitorState == IR_MON_OFF)
         return;

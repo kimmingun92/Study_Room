@@ -36,9 +36,9 @@ typedef struct {
 
 /* 등록 카드 UID */
 static RFID_User_t rfid_user_tbl[] = {
-    {{0xED, 0x89, 0x6D, 0x05}, 0}, // 0번 방
+    {{0x36, 0x4C, 0xF1, 0x05}, 0}, // 0번 방
     {{0xCC, 0xEF, 0x4B, 0x06}, 1}, // 1번 방
-    {{0x11, 0x22, 0x33, 0x44}, 2}, // 수정 필요
+    {{0x07, 0xFC, 0xEB, 0x05}, 2}, // 2번 방
 };
 
 static uint32_t door_close_time[RFID_DOOR_COUNT] = {
@@ -126,6 +126,7 @@ bool rfidInit(void)
     rc522WriteReg(REG_MODE, 0x3D);
 
     rc522AntennaOn();
+    rfid_monitor = true;
 
     return true;
 }
@@ -297,7 +298,7 @@ void rfidProcess(void)
     rfid_uid_t uid;
     uint32_t now = millis();
 
-    /* 15초 지난 문 자동 닫기 */
+    /* 5초 지난 문 자동 닫기 */
     for (uint8_t i = 0; i < RFID_DOOR_COUNT; i++) {
         if (door_close_time[i] != 0 && now >= door_close_time[i]) {
             changeDoorState(i, DOOR_CLOSE);

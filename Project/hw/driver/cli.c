@@ -422,7 +422,7 @@ void cliRunCommand(void)
 
 void cliPrintf(const char *fmt, ...)
 {
-    char buf[CLI_LINE_BUF_MAX];
+    char buf[256];
     uint32_t len;
     va_list args;
 

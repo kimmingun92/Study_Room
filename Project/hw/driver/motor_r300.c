@@ -40,7 +40,8 @@ bool motorR300Init(void)
     HAL_GPIO_Init(MOTOR_R300_IN2_PORT, &GPIO_InitStruct);
 
     HAL_TIM_PWM_Start(MOTOR_R300_TIM, MOTOR_R300_CHANNEL);
-    motorR300Set(false);
+    motorR300SetPulse(0, 3500);
+    motorR300Set(true);
 
     return true;
 }
@@ -67,12 +68,12 @@ void motorR300Update(uint8_t temperature, uint8_t humidity)
         return;
     }
 
-    if (temperature < 20 || humidity < 30) {
+    if (temperature < 20 || humidity < 25) {    
         motorR300Set(false);
-    } else if (temperature < 23 || humidity < 40) {
+    } else if (temperature < 23 || humidity < 35) {
         motorR300SetPulse(0, 3500); // 아주 약하게
         motorR300Set(true);
-    } else if (temperature < 26 || humidity < 55) {
+    } else if (temperature < 26 || humidity < 45) {
         motorR300SetPulse(0, 5000); // 약하게
         motorR300Set(true);
     } else {

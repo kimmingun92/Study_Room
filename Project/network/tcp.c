@@ -1,5 +1,6 @@
 #include "tcp.h"
-#include "cmsis_os2.h"
+
+extern bool isAutoMotor;
 
 static void parseProtocol(void *data, uint16_t len)
 {
@@ -54,7 +55,22 @@ static void parseProtocol(void *data, uint16_t len)
     case ID_OUT_FAN_SPEED:
         if (type == TYPE_UINT8) {
             uint8_t speed = (uint8_t)atoi(str_val);
-            // SetFanSpeed(speed);
+            isAutoMotor = false;
+            switch(speed){
+            case 1:
+                motorR300SetPulse(0, 3500);
+                break;
+            case 2:
+                motorR300SetPulse(0, 5000);
+                break;
+            case 3:
+                motorR300SetPulse(0, 7500);
+                break;
+            case 4:
+                motorR300SetPulse(0, 9999);
+                break;
+            }
+            motorR300Set(true);
         }
         break;
 

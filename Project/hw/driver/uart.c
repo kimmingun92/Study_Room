@@ -110,13 +110,13 @@ uint32_t uartWrite(uint8_t ch, uint8_t *p_data, uint32_t length)
 uint32_t uartPrintf(uint8_t ch, char *fmt, ...)
 {
 
-    char buf[128];
+    char buf[256];
     uint32_t len;
     va_list args;
 
     va_start(args, fmt);
 
-    len = vsnprintf(buf, 128, fmt, args);
+    len = vsnprintf(buf, 256, fmt, args);
 
     va_end(args);
     return uartWrite(ch, (uint8_t *)buf, len);
