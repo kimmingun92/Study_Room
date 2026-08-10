@@ -1,3 +1,8 @@
 build
 mx.scratch
 !.settings
+
+# STM32CubeIDE / Eclipse 빌드 산출물, 워크스페이스 상태 (재생성 가능)
+Debug/
+Release/
+.metadata/
