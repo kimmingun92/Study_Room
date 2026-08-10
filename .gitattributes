@@ -1,0 +1,12 @@
+# 서드파티/자동생성 라이브러리는 GitHub 언어 통계·diff에서 제외
+firmware/Drivers/** linguist-vendored
+firmware/Middlewares/** linguist-vendored
+firmware/LWIP/** linguist-vendored
+firmware/cmake/** linguist-vendored
+firmware/Core/Src/stm32f4xx_hal_msp.c linguist-generated
+firmware/Core/Src/stm32f4xx_it.c linguist-generated
+firmware/Core/Src/system_stm32f4xx.c linguist-generated
+firmware/Core/Src/syscalls.c linguist-generated
+firmware/Core/Src/sysmem.c linguist-generated
+firmware/*.ld linguist-vendored
+firmware/startup_*.s linguist-vendored
