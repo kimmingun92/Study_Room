@@ -26,6 +26,7 @@ Qt 클라이언트           Qt 서버 (좌석 관리,          LwIP/FreeRTOS   
 - [`firmware/README.md`](firmware/README.md)
 - [`qt_app/README.md`](qt_app/README.md)
 
+
 ## 핵심 설계 — FreeRTOS 6-Task 아키텍처
 
 열화상(I2C1+OLED), RFID(SPI), 환경센서(GPIO: DHT/IR), 통신(Ethernet/LwIP), CLI(UART)를
@@ -39,6 +40,7 @@ Qt 클라이언트           Qt 서버 (좌석 관리,          LwIP/FreeRTOS   
 | `irSensorTask` | `irSensorSystemTask` | IR 근접 센서, 자동 문 열림 | GPIO |
 | `rfidTask` | `rfidSystemTask` | RC522 카드 스캔, 도어 UID 매칭 | SPI |
 | `thermalTask` | `thermalSystemTask` | MLX90640 프레임 읽기 + OLED 시각화 | I2C1 (OLED와 공유) |
+
 
 ## 통신 프로토콜 — `@ID:TYPE:VALUE`
 
@@ -67,6 +69,7 @@ Qt 클라이언트           Qt 서버 (좌석 관리,          LwIP/FreeRTOS   
 
 서버는 접속한 소켓의 IP가 보드 고정 IP(`10.10.16.200`)인지로 보드와 클라이언트를
 구분하고, 보드가 보낸 센서 데이터는 **입실 중인 좌석의 클라이언트에게만** 포워딩한다.
+
 
 ## 트러블슈팅
 
@@ -112,6 +115,7 @@ condition)가 발생했다. **타임베이스를 `TIM1`에서 범용 타이머 `
 백오프(재시도마다 대기시간 2배, 최대 30초) + 랜덤 지터(0~500ms, 여러 보드의 재접속
 타이밍 분산) + 주기적 Heartbeat(응답 3회 연속 실패 시 강제 재연결)로 설계
 
+
 ## 실행 방법 (요약)
 
 1. **STM32 보드**: `firmware/`를 STM32CubeIDE 또는 VSCode+CMake로 빌드해 보드에
@@ -122,6 +126,7 @@ condition)가 발생했다. **타임베이스를 `TIM1`에서 범용 타이머 `
 
 자세한 빌드 명령은 [`firmware/README.md`](firmware/README.md),
 [`qt_app/README.md`](qt_app/README.md) 참고.
+
 
 ## 개선 가능 사항
 
