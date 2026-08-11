@@ -4,9 +4,6 @@ STM32F429ZIT6 보드 펌웨어. STM32CubeMX로 생성한 뼈대(`Core/`, `Driver
 `Middlewares/`, `LWIP/`) 위에 실제 애플리케이션 코드(`Project/`)를 얹은 구조다.
 FreeRTOS 6개 태스크로 센서 읽기·액추에이터 제어·TCP 통신·CLI를 병렬 처리한다.
 
-이 폴더는 원래 별도 저장소(`github.com/Pjumo/StudyRoom`)였던 걸 커밋 히스토리
-그대로 가져온 것이다 — `git log`로 보면 처음 LED 하나 켜는 것부터 열화상 센서
-붙이기까지 46개 커밋이 순서대로 남아있다.
 
 ## 폴더 구조
 
@@ -15,7 +12,7 @@ firmware/
 ├── Core/               STM32CubeMX 자동 생성 초기화 코드
 │   ├── Src/main.c, freertos.c, gpio.c, i2c.c, spi.c, tim.c, usart.c
 │   └── Inc/ (대응 헤더)
-├── Project/            직접 작성한 애플리케이션 코드 ← 여기가 핵심
+├── Project/            직접 작성한 애플리케이션 코드 
 │   ├── ap/             태스크 진입점 (ap.c)
 │   ├── bsp/             delay/millis 등 보드 지원 함수
 │   ├── common/           공통 정의, 로그 매크로
@@ -43,7 +40,7 @@ firmware/
 | `oled.c/h` | SSD1306 OLED (128×64) | 5×7 비트맵 폰트 직접 구현, 열화상 시각화 |
 | `ir_receiver.c/h` | IR 리모컨 수신 | NEC 프로토콜, 타이머+인터럽트로 비트 디코딩 |
 | `ir_sensor.c/h` | IR 근접 센서 | 감지 시 문 자동 개방 (5초 뒤 자동 닫힘) |
-| `i2c_mutex.c/h` | I2C1 버스 보호 | OLED/Thermal 동시 접근 방지용 뮤텍스 (⚠️ 정의만 있고 호출부 미연결 — 루트 README 트러블슈팅 참고) |
+| `i2c_mutex.c/h` | I2C1 버스 보호 | OLED/Thermal 동시 접근 방지용 뮤텍스 (정의만 있고 호출부 미연결 — 루트 README 트러블슈팅 참고) |
 | `uart.c/h` | UART3 | 메시지 큐 기반 non-blocking 수신 |
 | `cli.c/h` | 시리얼 CLI | 명령 히스토리, 방향키 지원 (`door`, `led`, `dht`, `rfid`, `motor`, `th` 등) |
 | `log.c/h` + `log_def.h` | 로그 매크로 | 레벨별(FATAL~VERBOSE) ANSI 컬러 출력 |
