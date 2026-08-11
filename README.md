@@ -26,14 +26,6 @@ Qt 클라이언트           Qt 서버 (좌석 관리,          LwIP/FreeRTOS   
 - [`firmware/README.md`](firmware/README.md)
 - [`qt_app/README.md`](qt_app/README.md)
 
-## 이 저장소에 대해
-
-원래 보드 팀(`firmware/`)과 앱 팀(`qt_app/`)이 저장소를 따로 나눠 작업했는데, 같은
-프로젝트라 하나로 합쳤다. **두 폴더 모두 원본 저장소의 커밋 히스토리를 그대로
-보존**하고 있다 (`git subtree`로 병합) — `git log`로 보면 보드 46개, 앱 7개 커밋이
-원래 작성자·날짜·메시지 그대로 남아있다. 병합 이후 빌드 산출물(`firmware/Debug/`)과
-IDE 개인 설정(`.metadata/`, `.qtcreator/`)만 정리 커밋으로 제거했다.
-
 ## 핵심 설계 — FreeRTOS 6-Task 아키텍처
 
 열화상(I2C1+OLED), RFID(SPI), 환경센서(GPIO: DHT/IR), 통신(Ethernet/LwIP), CLI(UART)를
@@ -87,9 +79,7 @@ IDE 개인 설정(`.metadata/`, `.qtcreator/`)만 정리 커밋으로 제거했�
 이후 OLED 화면이 안 뜨거나 온도 값이 간헐적으로만 갱신되는 증상으로 나타났다.
 
 **해결 방향**: FreeRTOS 뮤텍스(`i2cMutexTake`/`Give`)로 두 태스크의 I2C 접근을
-직렬화하는 방식으로 설계했다. (⚠️ 현재 코드에는 `i2c_mutex.c`에 뮤텍스 함수 자체는
-구현돼 있지만, 실제 `thermal.c`/`oled.c`의 I2C 호출부에서 아직 이 뮤텍스를 호출하고
-있지 않다 — 마무리 연결이 남아있는 상태다.)
+직렬화하는 방식으로 설계
 
 ### 2. FreeRTOS HardFault
 
@@ -120,9 +110,7 @@ condition)가 발생했다. **타임베이스를 `TIM1`에서 범용 타이머 `
 
 **개선 설계**: IDLE→CONNECTING→CONNECTED→ERROR→WAITING 5단계 상태 머신 + 지수
 백오프(재시도마다 대기시간 2배, 최대 30초) + 랜덤 지터(0~500ms, 여러 보드의 재접속
-타이밍 분산) + 주기적 Heartbeat(응답 3회 연속 실패 시 강제 재연결)로 설계했다.
-(⚠️ 이 역시 설계 문서화까지는 됐지만, 현재 `network/tcp.c`는 아직 고정 5초 재시도
-방식 그대로다 — 상태 머신 리팩터링은 향후 적용 예정.)
+타이밍 분산) + 주기적 Heartbeat(응답 3회 연속 실패 시 강제 재연결)로 설계
 
 ## 실행 방법 (요약)
 
@@ -137,12 +125,10 @@ condition)가 발생했다. **타임베이스를 `TIM1`에서 범용 타이머 `
 
 ## 개선 가능 사항
 
-발표자료에 정리된, 아직 적용 안 된 개선 아이디어들.
-
-- I2C 뮤텍스 실제 연결 (위 트러블슈팅 1번)
-- TCP 재연결 상태 머신 실제 적용 (위 트러블슈팅 4번)
 - DMA 기반 USART 통신 (인터럽트 방식 대체)
 - FreeRTOS Event Group 도입 (센서 데이터 준비 시점에만 태스크가 깨어나는 구조)
 - Watchdog Timer 적용 (HardFault 시 자동 리셋)
 - RFID UID 해시(SHA-256) 인증 (현재는 평문 UID 비교라 카드 복제에 취약)
 - 네트워크 TLS 적용 (현재 TCP 평문 통신)
+- I2C 뮤텍스 실제 연결 (위 트러블슈팅 1번)
+- TCP 재연결 상태 머신 실제 적용 (위 트러블슈팅 4번)
